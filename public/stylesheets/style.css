@@ -1,18 +1,18 @@
-.form-signin
+.form
 {
   max-width: 330px;
   padding: 15px;
   margin: 0 auto;
 }
-.form-signin .form-signin-heading, .form-signin .checkbox
+.form .form-heading, .form .checkbox
 {
   margin-bottom: 10px;
 }
-.form-signin .checkbox
+.form .checkbox
 {
   font-weight: normal;
 }
-.form-signin .form-control
+.form .form-control
 {
   position: relative;
   font-size: 16px;
@@ -22,17 +22,17 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.form-signin .form-control:focus
+.form .form-control:focus
 {
   z-index: 2;
 }
-.form-signin input[type="text"]
+.form input[type="text"]
 {
   margin-bottom: -1px;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
-.form-signin input[type="password"]
+.form input[type="password"]
 {
   margin-bottom: 10px;
   border-top-left-radius: 0;
@@ -46,16 +46,6 @@
   -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-}
-.btn{
-  display: block;
-  margin: 15px;
-  background-color: #1e90ff;
-  border: none;
-  color: white;
-  padding: 12px 16px;
-  font-size: 16px;
-  cursor: pointer;
 }
 .login-title
 {
