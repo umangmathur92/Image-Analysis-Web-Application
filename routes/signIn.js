@@ -10,10 +10,10 @@ router.get('/', function(req, res, next) {
 // after form submission
 router.post('/', function(req, res, next) {
 
-    db.query('select * from test;', function (err, results, fields) {
+    db.query('select * from users;', function (err, results, fields) {
         console.log('connected');
         if (err) throw err;
-        console.log("result:" + results);
+        console.log("result:" + JSON.stringify(results));
     });
     res.render('signIn');
 });
