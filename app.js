@@ -3,12 +3,16 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var expressValidator = require('express-validator');
 var logger = require('morgan');
+
+// auth packages
+var session = require('express-session');
+var passport = require('passport');
 
 var usersRouter = require('./routes/users');
 var signUpRouter = require('./routes/signUp');
 var signInRouter = require('./routes/signIn');
+var homeRouter = require('./routes/home');
 
 var app = express();
 
@@ -20,13 +24,22 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser());
-app.use(expressValidator());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+    secret: 'refdfssadadsa',
+    resave: false,
+    saveUninitialized: false,
+    // cookie: { secure: true }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', signInRouter);
 app.use('/users', usersRouter);
 app.use('/signUp', signUpRouter);
+app.use('/home', homeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

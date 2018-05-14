@@ -15,7 +15,6 @@ router.post('/', function(req, res, next) {
         if (err) throw err;
         console.log("result:" + results);
     });
-
     res.render('signIn');
 });
 
