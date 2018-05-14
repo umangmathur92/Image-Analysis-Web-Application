@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "body-parser": "^1.18.2",
-    "mysql": "latest",
-    "dotenv": "latest"
+    "mysql": "latest"
   }
 }

@@ -4,7 +4,7 @@ const db = require('../helpers/db');
 
 /* GET sign in page. */
 router.get('/', function(req, res, next) {
-    res.render('signIn', {title: 'sign in'});
+    res.render('signIn');
 });
 
 // after form submission
@@ -16,7 +16,7 @@ router.post('/', function(req, res, next) {
         console.log("result:" + results);
     });
 
-    res.render('signIn', {title:'signed in'});
+    res.render('signIn');
 });
 
 module.exports = router;
