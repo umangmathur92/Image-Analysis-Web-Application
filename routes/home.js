@@ -17,9 +17,9 @@ router.get('/', authenticationMiddleware(), function(req, res) {
 });
 
 // logout
-router.post('/logout', function(req, res, next) {
-    res.send('logged out');
-});
+// router.post('/logout', function(req, res, next) {
+//     res.send('logged out');
+// });
 
 function authenticationMiddleware() {
     return (req, res, next) => {

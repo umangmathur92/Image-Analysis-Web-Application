@@ -8,6 +8,7 @@ var logger = require('morgan');
 // auth packages
 var session = require('express-session');
 var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 var MySQLStore = require('express-mysql-session')(session);
 
 var usersRouter = require('./routes/users');
@@ -45,8 +46,17 @@ app.use(session({
     saveUninitialized: false,
     // cookie: { secure: true }
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+// passport.use(new LocalStrategy(
+//     function(username, password, done) {
+//         console.log(email);
+//         console.log(password);
+//         return done(null, 'ssasdas');
+//     }
+// ));
 
 app.use('/', signInRouter);
 app.use('/users', usersRouter);
