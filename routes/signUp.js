@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../helpers/db');
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 /* GET sign up page. */
 router.get('/', function(req, res, next) {
@@ -14,13 +16,16 @@ router.post('/', function(req, res, next) {
     email = req.body.email;
     password = req.body.password;
 
-    db.query('INSERT INTO users (userName, email, password) VALUES (?, ?, ?)',
-        [userName, email, password] , function(error, results, fields) {
-            if (error) throw error;
-            console.log("result:" +JSON.stringify(results) );
-        });
+    bcrypt.hash(password, saltRounds, function (err, hash) {
+        db.query('INSERT INTO users (userName, email, password) VALUES (?, ?, ?)',
+            [userName, email, hash], function (error, results, fields) {
+                if (error) throw error;
 
-    res.render('signUp');
+                // res.render('signUp');
+                console.log("result:" + JSON.stringify(results));
+            })
+        res.render('signUp');
+    });
 });
 
 module.exports = router;
