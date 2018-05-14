@@ -7,12 +7,12 @@ var expressValidator = require('express-validator');
 var passport = require('passport');
 
 /* GET sign up page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
     res.render('signUp');
 });
 
 // after form submission
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
 
     username = req.body.username;
     email = req.body.email;
@@ -29,28 +29,24 @@ router.post('/', function(req, res, next) {
                     // get userId of logged in user
                     const user_id = results[0];
 
-                    console.log('UserId' +user_id);
-                    req.logIn(user_id, function(err) {
+                    console.log('UserId' + user_id);
+                    req.logIn(user_id, function (err) {
                         // if success
                         res.redirect('/home');
 
                     });
-                    // res.render('home');
                 });
-                // res.render('signUp');
                 console.log("result:" + JSON.stringify(results));
             })
-        // res.render('signUp');
     });
-
 });
 
-passport.serializeUser(function(user_id, done) {
+passport.serializeUser(function (user_id, done) {
     done(null, user_id);
 });
 
-passport.deserializeUser(function(user_id, done) {
-        done(null, user_id);
+passport.deserializeUser(function (user_id, done) {
+    done(null, user_id);
 });
 
 module.exports = router;

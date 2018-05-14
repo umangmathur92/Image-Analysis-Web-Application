@@ -3,7 +3,7 @@
 <head>
     <title>Node Authentication</title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
 </head>
 <body>
 <div class="container">
@@ -13,19 +13,40 @@
             <div class="account-wall">
                 <form class="form" method="POST" action="/signUp">
                     <label for="username">User Name</label>
-                    <input type="text" class="form-control" placeholder="User Name" name="username" required autofocus><br>
+                    <input type="text" class="form-control" placeholder="User Name" name="username" required
+                           autofocus><br>
                     <label for="email">Email</label>
                     <input type="email" class="form-control" placeholder="Email" name="email" required autofocus><br>
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" placeholder="Password" name="password" required><br>
+                    <input type="password" class="form-control" placeholder="Password" id="password" name="password"
+                           required><br>
                     <label for="passwordMatch">Re-Enter Password</label>
-                    <input type="password" class="form-control" placeholder="Password" name="passwordMatch" required><br>
+                    <input type="password" class="form-control" placeholder="Password" id="passwordMatch"
+                           name="passwordMatch" required><br>
                     <button class="btn btn-lg btn-primary btn-block" type="submit">
-                        Sign Up</button>
+                        Sign Up
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    window.onload = function () {
+        document.getElementById("password").onchange = validatePassword;
+        document.getElementById("passwordMatch").onchange = validatePassword;
+    }
+
+    function validatePassword() {
+        var pass2 = document.getElementById("passwordMatch").value;
+        var pass1 = document.getElementById("password").value;
+        if (pass1 !== pass2)
+            document.getElementById("passwordMatch").setCustomValidity("Passwords Don't Match");
+        else
+            document.getElementById("passwordMatch").setCustomValidity('');
+    }
+</script>
+
 </body>
 </html>
