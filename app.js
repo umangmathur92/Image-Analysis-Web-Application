@@ -8,6 +8,7 @@ var logger = require('morgan');
 // auth packages
 var session = require('express-session');
 var passport = require('passport');
+var MySQLStore = require('express-mysql-session')(session);
 
 var usersRouter = require('./routes/users');
 var signUpRouter = require('./routes/signUp');
@@ -27,9 +28,19 @@ app.use(bodyParser());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var options = {
+    host: 'localhost',
+    user: 'root',
+    password: 'rootPassword',
+    database: 'NodeAuth'
+};
+
+var sessionStore = new MySQLStore(options);
+
 app.use(session({
     secret: 'refdfssadadsa',
     resave: false,
+    store: sessionStore,
     saveUninitialized: false,
     // cookie: { secure: true }
 }));
