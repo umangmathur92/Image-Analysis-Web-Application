@@ -1,12 +1,17 @@
+const db = require('../database/db');
 var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
     if (req.isAuthenticated()) {
-        console.log("user_id:" + JSON.stringify(req.user));
-        console.log("is user authenticated:" + req.isAuthenticated());
-        res.render('home');
+        var user = req.user;
+        console.log(user);
+        console.log("user_id: " + user.user_id);
+        console.log("user_name: " + user.user_name);
+        console.log("is user authenticated: " + req.isAuthenticated());
+
+        res.render('home', {data: user.user_name});
     } else {
         res.redirect('/');
     }

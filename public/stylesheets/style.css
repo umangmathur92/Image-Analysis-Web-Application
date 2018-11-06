@@ -66,3 +66,26 @@
 h3{
   padding: 15px;
 }
+
+/*home page */
+.thumbnail {
+  height: 290px;
+  width: 80%;
+  border:  silver solid;
+  margin: 0.5em;
+  padding: 0.5em;
+  text-align: center;
+  font-style: italic;
+  font-size: large;
+  text-indent: 0;
+}
+img.scaled {
+  height: 220px;
+  width: 100%;
+}
+.thumbnail b {
+  position: absolute;
+  bottom: 10%;
+  left: 12%;
+  color: black;
+}

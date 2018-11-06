@@ -4,6 +4,9 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var dotenv = require('dotenv');
+
+dotenv.config();
 
 // auth packages
 var session = require('express-session');
@@ -31,10 +34,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var options = {
-    host: 'localhost',
-    user: 'root',
-    password: 'rootPassword',
-    database: 'NodeAuth'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 };
 
 var sessionStore = new MySQLStore(options);

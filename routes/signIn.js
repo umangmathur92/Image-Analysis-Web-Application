@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const db = require('../helpers/db');
+const db = require('../database/db');
 var passport = require("passport");
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt');
@@ -19,10 +19,10 @@ router.post('/',
 
 passport.use(new LocalStrategy(
     function (username, password, done) {
-        console.log(username);
+        console.log("username is:  " +username);
         console.log(password);
 
-        db.query('SELECT id, password from users WHERE username = ?', [username], function (err, results, fields) {
+        db.query('SELECT * from users WHERE username = ?', [username], function (err, results, fields) {
             if (err) {
                 done(err)
             };
@@ -37,7 +37,7 @@ passport.use(new LocalStrategy(
 
             bcrypt.compare(password, hash, function (err, response) {
                 if (response === true) {
-                    return done(null, {user_id: results[0].id});
+                    return done(null, {user_id: results[0].id, user_name:results[0].username });
                 } else {
                     return done(null, false);
                 }
