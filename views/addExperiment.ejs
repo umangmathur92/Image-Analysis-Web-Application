@@ -29,22 +29,49 @@
                     <input type="date" class="form-control" name="expDate" required autofocus><br>
 
                     <label for="image">Experiment Image</label>
-                    <input type="file"  name="expImage" required autofocus><br>
+                    <input type="file" name="expImage" multiple accept="image/*" required autofocus/><br>
+
 
                     <label for="expType">Experiment Type</label>
                     <input type="text" class="form-control" placeholder="Experiment Type" name="expType" required
                            autofocus><br>
 
+                    <!--<input type="file"  name="expImage" required autofocus><br>-->
+
+                    <!--<p>Multiple & accept:-->
+                        <!--<input type="file" name="expImages" multiple accept="image/*" /></p>-->
+
+                    <!--<p>Directory:-->
+                        <!--<input type="file" webkitdirectory mozdirectory /></p>-->
+
+                    <!--<p>Directory & accept:-->
+                        <!--<input type="file" webkitdirectory mozdirectory accept="image/*" /></p>-->
+
+                    <!--<p>Multiple:-->
+                        <!--<input type="file" multiple /></p>-->
+
+                    <!--<input type="file" id="files" name="files[]" multiple mozdirectory="" webkitdirectory="" directory="" />-->
+
+                    <!--<input type="file" id="file_input" webkitdirectory="" directory="">-->
+
+                    <!--<p>New Try:-->
+                        <!--<input type="file" name="files[]" accept="image/*" multiple webkitdirectory mozdirectory> </p>-->
+
+                    <!--<p>Another try:-->
+                        <!--<input type="file" id="flup" onchange="getfolder(event)" webkitdirectory mozdirectory msdirectory odirectory directory multiple />-->
+                    <!--</p>-->
+
+                    <!--<input type="file" id="myFiles" webkitdirectory mozdirectory msdirectory odirectory directory multiple>-->
 
                     <button class="btn btn-lg btn-primary btn-block" type="submit">
                         Add Experiment
                     </button>
+
                 </form>
 
             </div>
         </div>
     </div>
 </div>
-
 </body>
 </html>

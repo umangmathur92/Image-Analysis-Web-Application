@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var multer = require('multer');
 var path = require('path');
+var res = require("express");
 
 // set storage engine
 var storage = multer.diskStorage({
@@ -22,7 +23,8 @@ var upload = multer({
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb);
     }
-}).single("expImage");
+}).array('expImage', 10);
+// }).single("expImage");
 
 // check extension and mime type of the file
 function checkFileType(file, cb) {
@@ -71,11 +73,23 @@ router.post('/', function (req, res, next) {
         var body = req.body;
         console.log(body);
 
-        var fileInfo = req.file;
+        var fileInfo = req.files;
         console.log(fileInfo);
 
-        var filename = req.file.originalname;
-        console.log("FileName: " +filename);
+        // var filename = req.file.originalname;
+
+        var fileLength = req.files.length;
+        console.log("fileLength: " + fileLength);
+
+        var text="";
+        for (var i = 0; i < fileLength; i++) {
+            var fileName = req.files[i].originalname;
+
+            console.log(text += fileName + "," );
+        }
+
+        var removedLastComma = text.substring(0, text.length-1);
+        console.log("FileNames: " + removedLastComma);
 
         console.log("user_id: " + user.user_id);
         console.log("user_name: " + user.user_name);
@@ -83,7 +97,7 @@ router.post('/', function (req, res, next) {
         console.log("expTitle: " + expTitle);
         console.log("expDate: " + expDate);
         console.log("expType: " + expType);
-        console.log("expImage: " + expImage);
+        // console.log("expImage: " + getFilename);
 
         res.render('home', {data: user.user_name});
     });
