@@ -11,7 +11,13 @@ router.get('/', function (req, res, next) {
         console.log("user_name: " + user.user_name);
         console.log("is user authenticated: " + req.isAuthenticated());
 
-        res.render('home', {data: user.user_name});
+        db.query('SELECT * FROM experiments WHERE users_id = '+user.user_id+'', function (error, results, fields) {
+                if (error) throw error;
+
+                res.render('home', {uname: user.user_name, data: results} );
+            });
+
+        // res.render('home', {data: user.user_name});
     } else {
         res.redirect('/');
     }

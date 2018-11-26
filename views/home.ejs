@@ -20,7 +20,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-6 col-md-4 col-md-offset-4">
-            <h1 class="text-center login-title">Welcome <%= data %>!</h1>
+            <h1 class="text-center login-title">Welcome <%= uname %>!</h1>
             <form class="form" method="POST" action="/logout">
                 <button class="btn btn-lg btn-primary btn-block" type="submit">
                     Logout
@@ -42,6 +42,27 @@
             </a>
         </div>
     </div>
+
+    <div class="col-md-4">
+        <div class="thumbnail">
+            <!--<a href="images/add.png" target="_blank">-->
+            <a href="/addExperiment">
+                <p><img class=scaled src="images/add.png" alt="Add a New Experimnet Here!">
+                <hr>
+                <p> <b>Add a New Experimnet Here! </b>
+            </a>
+        </div>
+    </div>
+
+    <% for (var i = 0; i < data.length; i++) { %>
+
+    <li id="expId" name="expid"><b> Exp Id: </b> <%= data[i].exp_id %> </li>
+    <li id="usersId" name="usersId"><b> Users Id: </b> <%= data[i].users_id %> </li>
+    <li id="expTitle" name="expTitle"><b> Exp Title: </b> <%= data[i].exp_title %> </li>
+    <li id="expDate" name="expDate"><b> Exp Date: </b> <%= data[i].exp_date %> </li>
+    <li id="expType" name="expType"><b> Exp Type: </b> <%= data[i].exp_type %> </li>
+
+    <% } %>
 
 </div>
 

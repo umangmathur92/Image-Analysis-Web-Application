@@ -25,7 +25,7 @@ passport.use(new LocalStrategy(
         db.query('SELECT * from users WHERE username = ?', [username], function (err, results, fields) {
             if (err) {
                 done(err)
-            };
+            }
 
             // if username does not exist in db
             if (results.length === 0) {
