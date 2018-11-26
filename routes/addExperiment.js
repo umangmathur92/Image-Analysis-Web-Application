@@ -11,7 +11,8 @@ var storage = multer.diskStorage({
     filename: function (req, file, cb) {
         // cb(error, fileName after upload -- fieldname is image so it will be image - timestamp.ext)
         // path module uses extname function and extract files extension
-        cb(null, req.body.expTitle + '-' + Date.now() +
+        var now = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T','-');
+        cb(null, req.body.expTitle + '-' + now +
             path.extname(file.originalname));
     }
 });
@@ -119,7 +120,7 @@ router.post('/', function (req, res, next) {
                 if (error) throw error;
 
                 for (var k = 0; k < array.length; k++) {
-                    var now = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T',' ');
+                    var now = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T','-');
                     db.query('INSERT INTO experiment_images (exp_id, exp_images, created_at) VALUES (?, ?, ?)',
                         [results.insertId, array[k], now ])
                 }
