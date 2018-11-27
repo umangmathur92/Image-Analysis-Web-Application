@@ -26,7 +26,6 @@ router.get('/:id', function (req, res, next) {
             });
         });
 
-        // res.render('viewExperiment', {uname: user.user_name});
     } else {
         res.redirect('/');
     }

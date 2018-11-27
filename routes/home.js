@@ -14,15 +14,13 @@ router.get('/', function (req, res, next) {
         db.query('SELECT * FROM experiments WHERE users_id = '+user.user_id+'', function (error, results, fields) {
                 if (error) throw error;
 
-            db.query('select  * from experiment_images WHERE user_id = '+user.user_id+'', function (err, results2, field2) {
+            db.query('select exp_images from experiment_images WHERE user_id = '+user.user_id+' LIMIT 1 ', function (err, results2, field2) {
+            // db.query('select min(exp_images), exp_id from experiment_images where user_id=30 group by exp_id LIMIT 1', function (err, results2, field2) {
                 if (error) throw error;
 
                 res.render('home', {uname: user.user_name, data: results, eImage: results2} );
             });
-
-            // res.render('home', {uname: user.user_name, data: results, eImage: results} );
             });
-        // res.render('home', {data: user.user_name});
     } else {
         res.redirect('/');
     }
