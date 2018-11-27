@@ -33,17 +33,19 @@
 <div class="row">
 
     <% for (var i = 0; i < data.length; i++) { %>
+    <% for (var j = 0; j < eImage.length; j++) { %>
 
-        <div class="col-md-4">
+    <div class="col-md-4">
         <div class="thumbnail">
             <a href="viewExperiment/<%= data[i].exp_id %>">
-                <p><img class=scaled src="uploads/exp1-1543199919855.jpg" alt="Add a New Experimnet Here!">
+                <p><img class=scaled src="<%= eImage[j].exp_images %>" alt="Add a New Experimnet Here!">
                 <hr>
-                <p> <b><%= data[i].exp_id %> : <%= eImage %> </b>
+                <p> <b><%= data[i].exp_id %></b>
             </a>
         </div>
     </div>
 
+    <% } %>
     <% } %>
 
 </div>

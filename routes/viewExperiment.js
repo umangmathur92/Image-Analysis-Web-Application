@@ -22,15 +22,7 @@ router.get('/:id', function (req, res, next) {
             db.query('select * from experiment_images where exp_id='+id+'', function (err, results2, field2) {
                 if (error) throw error;
 
-                var text = "";
-
-                for (var i = 0; i < 2; i++) {
-                    var fileName = results2[i].exp_images;
-
-                    console.log(text+=fileName + "," );
-                }
-
-                res.render('viewExperiment', {uname: user.user_name, data: results, eImage: text});
+                res.render('viewExperiment', {uname: user.user_name, data: results, eImage: results2});
             });
         });
 

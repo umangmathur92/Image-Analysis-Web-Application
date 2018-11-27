@@ -1,30 +1,54 @@
 const db = require('../database/db');
 var express = require('express');
 var router = express.Router();
+var aws = require('aws-sdk');
 var multer = require('multer');
+var multerS3 = require('multer-s3');
 var path = require('path');
 var res = require("express");
 
+aws.config.update({
+    secretAccessKey: 'nVF2Vo/I0x1xj/AKeOZoLgdQMfV1L8jqFjB8QgyJ',
+    accessKeyId: 'AKIAJFDCH5BVVALYMDBA',
+    region: 'us-west-1'
+});
+
+var s3 = new aws.S3();
+
 // set storage engine
-var storage = multer.diskStorage({
-    destination: './public/uploads/',
-    filename: function (req, file, cb) {
-        // cb(error, fileName after upload -- fieldname is image so it will be image - timestamp.ext)
-        // path module uses extname function and extract files extension
-        var now = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T','-');
-        cb(null, req.body.expTitle + '-' + now +
-            path.extname(file.originalname));
-    }
+// var storage = multer.diskStorage({
+//     destination: './public/uploads/',
+//     filename: function (req, file, cb) {
+//         // cb(error, fileName after upload -- fieldname is image so it will be image - timestamp.ext)
+//         // path module uses extname function and extract files extension
+//         var now = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T','-');
+//         cb(null, req.body.expTitle + '-' + now +
+//             path.extname(file.originalname));
+//     }
+// });
+
+var upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: 'imageanalysiswebapp',
+        acl: 'public-read',
+        metadata: function (req, file, cb) {
+            cb(null, {fieldName: 'image'});
+        },
+        key: function (req, file, cb) {
+            cb(null, Date.now().toString() + ".png")
+        }
+    })
 });
 
 // initialize upload variable
-var upload = multer({
-    storage: storage,
-    limits: {fileSize: 1000000}, // 1MB
-    fileFilter: function (req, file, cb) {
-        checkFileType(file, cb);
-    }
-}).array('expImage', 10);
+// var upload = multer({
+//     storage: storage,
+//     limits: {fileSize: 1000000}, // 1MB
+//     fileFilter: function (req, file, cb) {
+//         checkFileType(file, cb);
+//     }
+// }).array('expImage', 10);
 // }).single("expImage");
 
 // check extension and mime type of the file
@@ -68,9 +92,11 @@ router.get('/', authenticationMiddleware(), function (req, res) {
 });
 
 // after form submission
-router.post('/', function (req, res, next) {
-    upload(req, res, function (err) {
+router.post('/', upload.array('expImage', 10), function (req, res, next) {
+    // upload(req, res, function (err) {
         var user = req.user;
+
+        console.log(req.files.location);
 
         console.log("user_id: " + user.user_id);
         console.log("user_name: " + user.user_name);
@@ -93,7 +119,7 @@ router.post('/', function (req, res, next) {
 
         var text="";
         for (var i = 0; i < fileLength; i++) {
-            var fileName = req.files[i].originalname;
+            var fileName = req.files[i].location;
 
             console.log(text += fileName + "," );
         }
@@ -121,14 +147,17 @@ router.post('/', function (req, res, next) {
 
                 for (var k = 0; k < array.length; k++) {
                     var now = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T','-');
-                    db.query('INSERT INTO experiment_images (exp_id, exp_images, created_at) VALUES (?, ?, ?)',
-                        [results.insertId, array[k], now ])
+                    db.query('INSERT INTO experiment_images (exp_id, user_id, exp_images, created_at) VALUES (?, ?, ?, ?)',
+                        [results.insertId, user.user_id, array[k], now ])
                 }
 
                 db.query('select * from experiments where users_id= '+ user.user_id +'', function (error, results, fields) {
                     if (error) throw error;
+                    db.query('select  * from experiment_images', function (err, results2, field2) {
+                        if (error) throw error;
 
-                    res.render('home', {uname: user.user_name, data: results} );
+                        res.render('home', {uname: user.user_name, data: results, eImage: results2} );
+                    })
                 });
 
                 // res.render('/home', {uname: user.user_name, data: results});
@@ -137,7 +166,6 @@ router.post('/', function (req, res, next) {
         // db.query('SELECT * FROM experiments');
         // res.render('home', {uname: user.user_name, data: res});
     });
-});
 
 // auth middleware
 function authenticationMiddleware() {
