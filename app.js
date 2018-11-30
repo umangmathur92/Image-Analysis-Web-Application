@@ -22,6 +22,7 @@ var homeRouter = require('./routes/home');
 var logoutRouter = require('./routes/logout');
 var addExperimentRouter = require('./routes/addExperiment');
 var viewExperimentRouter = require('./routes/viewExperiment');
+var editExperimentRouter = require('./routes/editExperiment');
 
 var app = express();
 
@@ -49,7 +50,7 @@ app.use(session({
     secret: 'refdfssadadsa',
     resave: false,
     store: sessionStore,
-    saveUninitialized: false,
+    saveUninitialized: false
     // cookie: { secure: true }
 }));
 
@@ -63,6 +64,7 @@ app.use('/home', homeRouter);
 app.use('/logout', logoutRouter);
 app.use('/addExperiment', addExperimentRouter);
 app.use('/viewExperiment', viewExperimentRouter);
+app.use('/viewExperiment/editExperiment', editExperimentRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
