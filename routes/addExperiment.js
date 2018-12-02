@@ -7,7 +7,6 @@ var multerS3 = require('multer-s3');
 var path = require('path');
 var res = require("express");
 
-
 var s3 = new aws.S3();
 
 var upload = multer({
@@ -33,10 +32,10 @@ router.get('/', function (req, res, next) {
         console.log("user_name: " + user.user_name);
         console.log("is user authenticated: " + req.isAuthenticated());
 
-        db.query('select * from experiments where users_id= '+ user.user_id +'', function (error, results, fields) {
+        db.query('SELECT * FROM experiments WHERE users_id= ' + user.user_id + '', function (error, results, fields) {
             if (error) throw error;
 
-            res.render('addExperiment', {uname: user.user_name, data: results} );
+            res.render('addExperiment', {uname: user.user_name, data: results});
         });
 
         // res.render('addExperiment', {uname: user.user_name});
@@ -51,65 +50,63 @@ router.get('/', authenticationMiddleware(), function (req, res) {
 
 // after form submission
 router.post('/', upload.array('expImage', 10), function (req, res, next) {
-        var user = req.user;
+    var user = req.user;
 
-        console.log("user_id: " + user.user_id);
-        console.log("user_name: " + user.user_name);
+    console.log("user_id: " + user.user_id);
+    console.log("user_name: " + user.user_name);
 
-        expTitle = req.body.expTitle;
-        expDate = req.body.expDate;
-        expType = req.body.expType;
+    expTitle = req.body.expTitle;
+    expDate = req.body.expDate;
+    expType = req.body.expType;
 
-        var body = req.body;
-        console.log(body);
+    var body = req.body;
+    console.log(body);
 
-        var fileInfo = req.files;
-        console.log(fileInfo);
+    var fileInfo = req.files;
+    console.log(fileInfo);
 
-        var fileLength = req.files.length;
-        console.log("fileLength: " + fileLength);
+    var fileLength = req.files.length;
+    console.log("fileLength: " + fileLength);
 
-        var text="";
-        for (var i = 0; i < fileLength; i++) {
-            var fileName = req.files[i].location;
-            console.log(text += fileName + "," );
-        }
+    var text = "";
+    for (var i = 0; i < fileLength; i++) {
+        var fileName = req.files[i].location;
+        console.log(text += fileName + ",");
+    }
 
-        var removedLastComma = text.substring(0, text.length-1);
-        console.log("FileNames: " + removedLastComma);
+    var removedLastComma = text.substring(0, text.length - 1);
+    console.log("FileNames: " + removedLastComma);
 
-        var array = removedLastComma.split(',');
-        console.log(array);
+    var array = removedLastComma.split(',');
+    console.log(array);
 
-        for (var j = 0; i < array.length; i++) {
-            console.log(array[i]);
-        }
+    for (var j = 0; i < array.length; i++) {
+        console.log(array[i]);
+    }
 
-        var formattedString = removedLastComma.split(",").join("\n");
-        console.log(formattedString);
+    var formattedString = removedLastComma.split(",").join("\n");
+    console.log(formattedString);
 
-        db.query('INSERT INTO experiments (users_id, exp_title, exp_date, exp_type) VALUES (?, ?, ?, ?)',
-            [user.user_id, expTitle, expDate, expType], function (error, results, fields) {
+    db.query('INSERT INTO experiments (users_id, exp_title, exp_date, exp_type) VALUES (?, ?, ?, ?)',
+        [user.user_id, expTitle, expDate, expType], function (error, results, fields) {
+            if (error) throw error;
+
+            for (var k = 0; k < array.length; k++) {
+                var now = new Date(new Date().toString().split('GMT')[0] + ' UTC').toISOString().split('.')[0].replace('T', '-');
+                db.query('INSERT INTO experiment_images (exp_id, user_id, exp_images, created_at) VALUES (?, ?, ?, ?)',
+                    [results.insertId, user.user_id, array[k], now])
+            }
+
+            db.query('SELECT * FROM experiments WHERE users_id= ' + user.user_id + '', function (error, results, fields) {
                 if (error) throw error;
-
-                for (var k = 0; k < array.length; k++) {
-                    var now = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T','-');
-                    db.query('INSERT INTO experiment_images (exp_id, user_id, exp_images, created_at) VALUES (?, ?, ?, ?)',
-                        [results.insertId, user.user_id, array[k], now ])
-                }
-
-                db.query('select * from experiments where users_id= '+ user.user_id +'', function (error, results, fields) {
+                db.query('select  * from experiment_images', function (err, results2, field2) {
                     if (error) throw error;
-                    db.query('select  * from experiment_images', function (err, results2, field2) {
-                        if (error) throw error;
 
-                        res.redirect('/home');
-
-                        // res.render('home', {uname: user.user_name, data: results, eImage: results2} );
-                    })
-                });
+                    res.redirect('/home');
+                })
+            });
         });
-   });
+});
 
 // auth middleware
 function authenticationMiddleware() {

@@ -7,7 +7,6 @@ var res = require("express");
 var aws = require('aws-sdk');
 var multerS3 = require('multer-s3');
 
-
 var s3 = new aws.S3();
 
 var upload = multer({
@@ -35,13 +34,15 @@ router.get('/:id', function (req, res, next) {
         var id = req.params.id;
         console.log(id);
 
-        db.query('SELECT * FROM experiments WHERE users_id = '+user.user_id+' AND exp_id='+id+' ', function (error, results, fields) {
+        console.log(req.params);
+
+        db.query('SELECT * FROM experiments WHERE users_id = ' + user.user_id + ' AND exp_id=' + id + ' ', function (error, results, fields) {
             if (error) throw error;
 
-            db.query('select * from experiment_images where exp_id='+id+'', function (err, results2, field2) {
+            db.query('SELECT * FROM experiment_images WHERE exp_id=' + id + '', function (err, results2, field2) {
                 if (error) throw error;
 
-                res.render('viewExperiment', {uname: user.user_name, data: results, eImage: results2});
+                res.render('viewExperiment', {uname: user.user_name, data: results, eImage: results2, exp_id: id});
             });
         });
 
@@ -54,10 +55,21 @@ router.get('/:id', authenticationMiddleware(), function (req, res) {
     res.render('viewExperiment');
 });
 
+router.post('/:id/deleteImages', function (req, res) {
+
+    try {
+        const images = JSON.parse(req.body.images).join(',');
+        db.query('DELETE FROM EXPERIMENT_IMAGES WHERE ID IN (' + images + ');', function (err, result) {
+        })
+    } catch (err) {
+        console.log(err)
+    }
+    res.sendStatus(200);
+});
+
 // after form submission
 router.post('/:id', upload.array('expImage', 10), function (req, res, next) {
     var user = req.user;
-
     console.log("user_id: " + user.user_id);
     console.log("user_name: " + user.user_name);
     var id = req.params.id;
@@ -68,13 +80,13 @@ router.post('/:id', upload.array('expImage', 10), function (req, res, next) {
     var fileLength = req.files.length;
     console.log("fileLength: " + fileLength);
 
-    var text="";
+    var text = "";
     for (var i = 0; i < fileLength; i++) {
         var fileName = req.files[i].location;
-        console.log(text += fileName + "," );
+        console.log(text += fileName + ",");
     }
 
-    var removedLastComma = text.substring(0, text.length-1);
+    var removedLastComma = text.substring(0, text.length - 1);
     console.log("FileNames: " + removedLastComma);
 
     var array = removedLastComma.split(',');
@@ -87,27 +99,21 @@ router.post('/:id', upload.array('expImage', 10), function (req, res, next) {
     var formattedString = removedLastComma.split(",").join("\n");
     console.log(formattedString);
 
-    db.query('SELECT * FROM experiments WHERE users_id = '+user.user_id+' AND exp_id='+id+' ', function (error, results, fields) {
+    db.query('SELECT * FROM experiments WHERE users_id = ' + user.user_id + ' AND exp_id=' + id + ' ', function (error, results, fields) {
         if (error) throw error;
 
-        db.query('select * from experiment_images where exp_id='+id+'', function (err, results2, field2) {
+        db.query('select * from experiment_images where exp_id=' + id + '', function (err, results2, field2) {
             if (error) throw error;
 
             for (var k = 0; k < array.length; k++) {
-                var now = new Date(new Date().toString().split('GMT')[0]+' UTC').toISOString().split('.')[0].replace('T','-');
+                var now = new Date(new Date().toString().split('GMT')[0] + ' UTC').toISOString().split('.')[0].replace('T', '-');
                 db.query('INSERT INTO experiment_images (exp_id, user_id, exp_images, created_at) VALUES (?, ?, ?, ?)',
-                    [id, user.user_id, array[k], now ])
+                    [id, user.user_id, array[k], now])
             }
 
-            res.redirect('/viewExperiment/'+id+'');
-
-
-            // res.render('viewExperiment', {uname: user.user_name, data: results, eImage: results2});
+            res.redirect('/viewExperiment/' + id + '');
         });
     });
-
-    // res.render('viewExperiment', {uname: user.user_name} );
-
 });
 
 // auth middleware
