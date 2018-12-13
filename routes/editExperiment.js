@@ -16,6 +16,7 @@ router.get('/:id', function (req, res, next) {
         var id = req.params.id;
         console.log(id);
 
+        console.log("GET");
         db.query('SELECT * FROM experiment_images WHERE id='+id+' ', function (error, results, fields) {
             if (error) throw error;
 
@@ -28,12 +29,30 @@ router.get('/:id', function (req, res, next) {
 });
 
 router.get('/:id', authenticationMiddleware(), function (req, res) {
+    console.log("GET 1");
     res.render('editExperiment');
 });
 
 // after form submission
 router.post('/:id', function (req, res, next) {
-    res.render('editExperiment');
+    if (req.isAuthenticated()) {
+        console.log("POST");
+        var user = req.user;
+        console.log(user);
+        console.log("exp_id: " + req.params.id);
+
+        console.log(req.body);
+        expImage = req.body.expImage;
+        console.log(expImage);
+
+        const images = (req.body.images);
+        console.log(images)
+
+        console.log("user_id: " + user.user_id);
+
+        res.sendStatus(200);
+    }
+    // res.render('editExperiment');
 });
 
 // auth middleware

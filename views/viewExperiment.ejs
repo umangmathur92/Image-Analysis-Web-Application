@@ -2,18 +2,16 @@
 <html lang="en">
 <head>
     <title>View Experiment</title>
-    <link rel='stylesheet' href='/stylesheets/style.css'/>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://use.fontawesome.com/8a92be1af5.js"></script>
-    <title>Home</title>
 
 </head>
 <body>
@@ -58,7 +56,7 @@
 
                         <% for (var i = 0; i < data.length; i++) { %>
 
-                        <form class="form" method="POST" value="Delete" action="<%= data[i].exp_id %>"
+                        <form class="form" method="POST" action="<%= data[i].exp_id %>"
                               enctype="multipart/form-data">
 
                             <label for="image">Select Images to add to <%= data[i].exp_title %></label>
@@ -85,7 +83,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title">Delete Images blah</h4>
+                        <h4 class="modal-title">Delete Images</h4>
                     </div>
 
                     <div class="modal-body">

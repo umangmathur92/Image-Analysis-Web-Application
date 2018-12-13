@@ -7,6 +7,12 @@ var res = require("express");
 var aws = require('aws-sdk');
 var multerS3 = require('multer-s3');
 
+aws.config.update({
+    secretAccessKey: 'bu1+o9vxCeuKV9dx3N+5D0JC/vnqa9+vyzib9C2v',
+    accessKeyId: 'AKIAJUSVNKYQ4HUPYFKQ',
+    region: 'us-west-1'
+});
+
 var s3 = new aws.S3();
 
 var upload = multer({
