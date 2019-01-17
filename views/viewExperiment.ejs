@@ -8,26 +8,155 @@
 
     <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/cropper.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://use.fontawesome.com/8a92be1af5.js"></script>
 
+    <script src="https://code.jquery.com/jquery.min.js"></script>
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet"/>
+
+    <style>
+        body {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0;
+            /*font-family: helvetica;*/
+            background-color: #FF7D12;
+            /*background-color: #0B3861;*/
+        }
+
+        .navbar {
+            margin-bottom: 0;
+            background-color: #f4511e;
+            z-index: 9999;
+            border: 0;
+            font-size: 12px !important;
+            line-height: 1.42857143 !important;
+            letter-spacing: 4px;
+            border-radius: 0;
+            font-family: Montserrat, sans-serif;
+        }
+
+        .navbar li a, .navbar .navbar-brand {
+            color: #fff !important;
+        }
+
+        .navbar-nav li a:hover, .navbar-nav li.active a {
+            color: #f4511e !important;
+            background-color: #fff !important;
+        }
+
+        .navbar-default .navbar-toggle {
+            border-color: transparent;
+            color: #fff !important;
+        }
+
+        .jumbocolor {
+            background-color: #f4511e;
+            color: #fff;
+        }
+
+        .divtop {
+            margin-top: 75px;
+        }
+
+        /**/
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .row,
+        .preview {
+            overflow: hidden;
+        }
+
+        .col {
+            float: left;
+        }
+
+        .lbl {
+            position: relative;
+            display: block;
+            height: 20px;
+            width: 44px;
+            background: #898989;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lbl:after {
+            position: absolute;
+            left: -2px;
+            top: -3px;
+            display: block;
+            width: 26px;
+            height: 26px;
+            border-radius: 100px;
+            background: #fff;
+            box-shadow: 0 3px 3px rgba(0,0,0,0.05);
+            content: '';
+            transition: all 0.3s ease;
+        }
+
+        .lbl:active:after { transform: scale(1.15, 0.85); }
+
+        .cbx:checked ~ label { background: #6fbeb5; }
+
+        .cbx:checked ~ label:after {
+            left: 20px;
+            background: #179588;
+        }
+
+        .cbx:disabled ~ label {
+            background: #d5d5d5;
+            pointer-events: none;
+        }
+
+        .cbx:disabled ~ label:after { background: #bcbdbc; }
+
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
 <div class="container">
-    <div class="row">
-        <div class="col-sm-6 col-md-4 col-md-offset-4">
-            <h1 class="text-center login-title">Welcome <%= uname %>!</h1>
-            <form class="form" method="POST" action="/logout">
-                <button class="btn btn-lg btn-primary btn-block" type="submit">
-                    Logout
-                </button>
-            </form>
-        </div>
+    <div class="container">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/home">EWA</a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome, <%= uname %>!</a></li>
+                        <li>
+                            <form class="form" id="form" method="POST" action="/logout">
+                                <a href="/logout"
+                                   onclick="document.getElementById('form').submit(); return false;"></span>
+                                    Logout</a></a>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
     </div>
 
-    <div class="row">
+    <div class="row divtop">
 
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addImageModal">
@@ -38,7 +167,9 @@
             Delete Images
         </button>
 
-        <button type="button" class="btn btn-primary checkall" style="float:right">Select All</button>
+        <button type="button" class="btn btn-primary uncheck" style="float:right">Select All</button>
+
+        <button type="button" class="btn btn-primary checkall" style="float:right">Enable Crop</button>
 
         <!-- add image modal -->
         <div class="modal fade" id="addImageModal" tabindex="-1" role="dialog" aria-labelledby="addImageModal"
@@ -118,11 +249,21 @@
         <div class="col-md-4">
             <input class="checkhour" type="checkbox" name="<%= eImage[j].id %>" id="<%= eImage[j].id %>"/>
             <div class="thumbnail">
-                <a href="editExperiment/<%= eImage[j].id %> ">
-                    <p><img class=scaled src="<%= eImage[j].exp_images %>" alt="Add a New Experimnet Here!">
-                    <hr>
-                    <p><b>Exp Id: <%= data[i].exp_id %> </b>
-                </a>
+
+                <p><img id="image" class="scaled" src="<%= eImage[j].exp_images %>" alt="Add a New Experimnet Here!">
+                <hr>
+
+                <!--<input type="checkbox" id="cmn-toggle-<%= eImage[j].id %>" class="crop" />-->
+                <!--<label for="cmn-toggle-<%= eImage[j].id %>" data-on="Color" class="lbl" style="float:right"></label>-->
+
+                <p style="float:right">
+                    <input class="chk" type="checkbox" value="<%= eImage[j].id %>" name="crop" id="<%= eImage[j].id %>"/>
+
+                    <input type='button' class="btn btn-primary" id='cropBtn' value='Crop' name="crop"/>
+
+                </p>
+
+                <p><b>Exp Id: <%= data[i].exp_id %> </b>
             </div>
         </div>
 
@@ -133,63 +274,212 @@
 
 </div>
 
-<script>
+<script src="/javascripts/cropper.js"></script>
 
-    $checkbox = $('.checkhour');
+<script>
+    // crop checkboxes -- gets's id of the enabled checkboxes
+    let selected;
+
+    $checkbox = $('.chk');
 
     $checkbox.click(checkArray);
-    var chkArray = [];
 
     function checkArray() {
-        chkArray = $.map($checkbox, function (el) {
-            if (el.checked) {
-                return el.id
-            }
+        let chkArray = [];
+        $(".chk:checked").each(function () {
+            chkArray.push($(this).val());
         });
-        console.log(chkArray);
-        document.getElementById("demo").innerHTML = chkArray;
 
-        if (chkArray.length === 0) {
-            document.getElementById("demo1").innerHTML = "No Image Selected";
-        }
-        if (chkArray.length === 1) {
-            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + chkArray.length + " image?";
+//        let selected;
+        selected = chkArray.join(',');
+
+        /* check if there is selected checkboxes, by default the length is 1 as it contains one single comma */
+        if (selected.length > 0) {
+            <!--document.getElementById('cropBtn-<%= eImage[3].id %>').disabled = false;-->
+//            $('#cropBtn').prop('disabled', false);
+            console.log("enable crop buttons: " + chkArray);
+            console.log(chkArray);
         } else {
-            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + chkArray.length + " images?";
+            <!--document.getElementById('cropBtn-<%= eImage[3].id %>').disabled = false;-->
+//            document.getElementById('cropBtn').disabled = true;
+//            $('#cropBtn').prop('disabled', true);
+            console.log("disable crop buttons: " + chkArray);
+            console.log(chkArray);
         }
     }
 
-    var clicked = false;
+    // enable all crop checkboxes
+    let clicked = false;
     $(".checkall").on("click", function () {
-        $(".checkhour").prop("checked", !clicked);
+        $(".chk").prop("checked", !clicked);
         clicked = !clicked;
-        chkArray = $.map($checkbox, function (el) {
+        let chkArray = [];
+        $(".chk:checked").each(function () {
+            chkArray.push($(this).val());
+        });
+
+//        let selected;
+        selected = chkArray.join(',');
+
+        /* check if there is selected checkboxes, by default the length is 1 as it contains one single comma */
+        if (selected.length > 0) {
+//            document.getElementById('cropBtn').disabled = true;
+//            $('#cropBtn').prop('disabled', false);
+            console.log("enable all crop buttons: " + chkArray);
+        } else {
+//            document.getElementById('cropBtn').disabled = false;
+//            $('#cropBtn').prop('disabled', true);
+            console.log("disable all crop buttons: " + chkArray);
+        }
+    });
+
+    function each(arr, callback) {
+        let length = arr.length;
+        let i;
+
+        for (i = 0; i < length; i++) {
+            callback.call(arr, arr[i], i, arr);
+        }
+
+        return arr;
+    }
+
+    let rect;
+
+    window.addEventListener('DOMContentLoaded', function () {
+//        let image = document.querySelector('#image');
+
+//        let image1 = document.getElementsByClassName("scaled")[0];
+
+//        let image = document.getElementsByClassName("scaled")[1];
+
+        let k;
+        for (k = 0; k < 40; k++) {
+            let image = document.getElementsByClassName("scaled")[k];
+
+            let cropper = new Cropper(image, {
+                ready: function () {
+                    let clone = this.cloneNode();
+
+                    clone.className = '';
+                    clone.style.cssText = (
+                        'display: block;' +
+                        'width: 100%;' +
+                        'min-width: 0;' +
+                        'min-height: 0;' +
+                        'max-width: none;' +
+                        'max-height: none;'
+                    );
+
+                    this.cropper.enable();
+
+//                    this.cropper.disable();
+                },
+
+                viewMode: 1,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                zoomable:false,
+                autoCrop: true,
+                responsive: true,
+                movable: false,
+
+            crop: function(value) {
+                    let data = value.detail;
+                    let top = data.y;
+                    let right = data.x + data.width;
+                    let bottom = data.y + data.height;
+                    let left = data.x;
+
+                    rect = 'rect(' + top + 'px, ' + right + 'px, ' + bottom + 'px, ' + left + 'px)';
+                    console.log(rect);
+                    console.log(selected);
+                },
+            });
+        }
+    });
+
+    // crop button
+    $("#cropBtn").click(function (e) {
+        e.preventDefault();
+
+        const data = {rect: rect}
+        const data1 = {selected: selected}
+
+        console.log(data);
+        console.log(data1);
+
+        $.ajax({
+                type: "POST",
+                url: window.location.href + "/cropImages",
+                data: {data1: JSON.stringify(data1), data: JSON.stringify(data)},
+                success: function (result) {
+                    location.href = window.location.href
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            });
+    });
+
+    // select images
+    $checkbox = $('.checkhour');
+
+    $checkbox.click(checkArray1);
+    let ckArray = [];
+
+    function checkArray1() {
+        ckArray = $.map($checkbox, function (el) {
             if (el.checked) {
                 return el.id
             }
         });
-        console.log(chkArray);
-        document.getElementById("demo").innerHTML = chkArray;
+        console.log(ckArray);
+        document.getElementById("demo").innerHTML = ckArray;
 
-        if (chkArray.length === 1) {
-            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + chkArray.length + " image?";
+        if (ckArray.length === 0) {
+            document.getElementById("demo1").innerHTML = "No Image Selected";
+        }
+        if (ckArray.length === 1) {
+            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + ckArray.length + " image?";
         } else {
-            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + chkArray.length + " images?";
+            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + ckArray.length + " images?";
+        }
+    }
+
+    // select all images using checkbox
+    let click = false;
+    $(".uncheck").on("click", function () {
+        $(".checkhour").prop("checked", !click);
+        click = !click;
+        ckArray = $.map($checkbox, function (el) {
+            if (el.checked) {
+                return el.id
+            }
+        });
+        console.log(ckArray);
+        document.getElementById("demo").innerHTML = ckArray;
+
+        if (ckArray.length === 1) {
+            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + ckArray.length + " image?";
+        } else {
+            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + ckArray.length + " images?";
         }
 
-        if (chkArray.length === 0) {
+        if (ckArray.length === 0) {
             document.getElementById("demo1").innerHTML = "No Image Selected";
         }
     });
 
+    // gets id of the images to delete on delete button
     $("#deleteBtn").click(function (e) {
         e.preventDefault();
 
-        const data = {foo: chkArray}
+        const data = {foo: ckArray}
         $.ajax({
             type: "POST",
             url: window.location.href + "/deleteImages",
-            data: {images: JSON.stringify(chkArray)},
+            data: {images: JSON.stringify(ckArray)},
             success: function (result) {
                 location.href = window.location.href
 //                location.reload()

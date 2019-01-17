@@ -7,27 +7,6 @@ var multerS3 = require('multer-s3');
 var path = require('path');
 var res = require("express");
 
-aws.config.update({
-    secretAccessKey: 'bu1+o9vxCeuKV9dx3N+5D0JC/vnqa9+vyzib9C2v',
-    accessKeyId: 'AKIAJUSVNKYQ4HUPYFKQ',
-    region: 'us-west-1'
-});
-
-var s3 = new aws.S3();
-
-var upload = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: 'imageanalysiswebapp',
-        acl: 'public-read',
-        metadata: function (req, file, cb) {
-            cb(null, {fieldName: 'image'});
-        },
-        key: function (req, file, cb) {
-            cb(null, Date.now().toString() + ".png")
-        }
-    })
-});
 
 /* GET home page. */
 router.get('/', function (req, res, next) {

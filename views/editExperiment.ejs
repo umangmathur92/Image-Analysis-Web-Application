@@ -8,12 +8,49 @@
 
     <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/cropper.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://use.fontawesome.com/8a92be1af5.js"></script>
 
     <style type="text/css">
+        body {
+            width: 100%;
+            margin: 0 auto;
+            padding: 0px;
+            font-family: helvetica;
+            background-color: #0B3861;
+        }
+        .navbar {
+            margin-bottom: 0;
+            background-color: #f4511e;
+            z-index: 9999;
+            border: 0;
+            font-size: 12px !important;
+            line-height: 1.42857143 !important;
+            letter-spacing: 4px;
+            border-radius: 0;
+            font-family: Montserrat, sans-serif;
+        }
+        .navbar li a, .navbar .navbar-brand {
+            color: #fff !important;
+        }
+        .navbar-nav li a:hover, .navbar-nav li.active a {
+            color: #f4511e !important;
+            background-color: #fff !important;
+        }
+        .navbar-default .navbar-toggle {
+            border-color: transparent;
+            color: #fff !important;
+        }
+        .jumbocolor{
+            background-color: #f4511e;
+            color:#fff;
+        }
+        .divtop{
+            margin-top:75px;
+        }
         .table {
             display: table;
             border-collapse: separate;
@@ -30,21 +67,86 @@
             border: 10px solid rgba(238, 238, 238, 0.6);
             background-color: rgba(238, 238, 238, 0.2);
         }
+        #wrapper
+        {
+            text-align:center;
+            margin:0 auto;
+            padding:0px;
+            width:995px;
+        }
+        #output_image
+        {
+            max-width:300px;
+        }
+        h1{
+            color: white;
+        }
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .row,
+        .preview {
+            overflow: hidden;
+        }
+
+        .col {
+            float: left;
+        }
+
+        .col-6 {
+            width: 50%;
+        }
+
+        .col-3 {
+            width: 25%;
+        }
+
+        .col-2 {
+            width: 16.7%;
+        }
+
+        .col-1 {
+            width: 8.3%;
+        }
     </style>
 
 </head>
 <body>
+
 <div class="container">
-    <div class="row">
-        <div class="col-sm-6 col-md-4 col-md-offset-4">
-            <h1 class="text-center login-title">Welcome <%= uname %>!</h1>
-            <form class="form" method="POST" action="/logout">
-                <button class="btn btn-lg btn-primary btn-block" type="submit">
-                    Logout
-                </button>
-            </form>
-        </div>
+    <div class="container">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/home">EWA</a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome,  <%= uname %>!</a></li>
+                        <li>
+                            <form class="form" id="form" method="POST" action="/logout">
+                                <a href="/logout" onclick="document.getElementById('form').submit(); return false;"></span> Logout</a></a>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
     </div>
+
+    <div class="row divtop">
 
     <div class="table">
         <div class="tableRow">
@@ -68,7 +170,7 @@
         </div>
     </div>
 
-    <!--delete image modal-->
+    <!--apply changes modal-->
     <div class="modal fade" id="applyChangesModal" tabindex="-1" role="dialog" aria-labelledby="applyChangesModal"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -82,19 +184,43 @@
 
                 <div class="modal-body">
 
-                    <img id="myImg" src="" name="expImage" width="107" height="98">
+                    <% for (var i = 0; i < data.length; i++) { %>
 
-                    <p id="demo"> Are you sure you want to apply the changes to the images?</p>
+                    <form class="form" method="POST" action="<%= data[i].exp_id %>"
+                          enctype="multipart/form-data">
+
+                        <input type="image" id="myImg" name="expImage" required autofocus/><br>
+                        <!--<button class="btn btn-primary btn-block" type="submit">-->
+                            <!--Add Images-->
+                        <!--</button>-->
+
+                        <p id="demo"> Are you sure you want to apply the changes to the images?</p>
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+
+                        <button class="btn btn-primary" type="submit" id="applyChangesBtn">
+                            Yes
+                        </button>
+
+                        <% } %>
+
+                    </form>
+
+                    <!--<form method="POST" action="getdata.php" enctype="multipart/form-data">-->
+                        <!--<input type="image" id="myImg" name="myimage" width="500" height="500">-->
+                    <!--</form>-->
+
+                    <!--<img id="myImg" src="" name="expImage" width="107" height="98">-->
 
                 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <!--<div class="modal-footer">-->
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal">No</button>-->
 
-                    <button class="btn btn-primary" type="submit" id="applyChangesBtn">
-                        Yes
-                    </button>
-                </div>
+                    <!--<button class="btn btn-primary" type="submit" id="applyChangesBtn">-->
+                        <!--Yes-->
+                    <!--</button>-->
+                <!--</div>-->
 
             </div>
         </div>
@@ -102,12 +228,15 @@
 
 </div>
 
+</div>
+
 </body>
 
 <script type="text/javascript">
 
-    var imageData;
-    var imageCropper = {
+    let imageData;
+    let base64;
+    let imageCropper = {
 
         ctx: null,
 
@@ -133,7 +262,7 @@
 
         init: function() {
             this.ctx = document.getElementById("panel").getContext("2d");
-            var imageUploader = document.getElementById('imageLoader');
+            let imageUploader = document.getElementById('imageLoader');
             this.initCanvas();
             document.getElementById("cropBttn").onclick = this.cropImage.bind(this);
         },
@@ -143,8 +272,8 @@
             this.image.setAttribute('crossOrigin', 'anonymous'); //optional,  it is needed only if your image is not avalible on same domain.
             this.image.setAttribute("width", "600px");
             this.image.setAttribute("height", "400px");
-            var oldURL = "<%= data[0].exp_images %>";
-            var newURL = oldURL.replace(/^https:\/\//i, 'http://');
+            let oldURL = "<%= data[0].exp_images %>";
+            let newURL = oldURL.replace(/^https:\/\//i, 'http://');
             console.log(newURL);
 
             this.image.src = newURL;
@@ -172,7 +301,7 @@
          *
          */
         onMouseDown: function(e) {
-            var loc = this.windowToCanvas(e.clientX, e.clientY);
+            let loc = this.windowToCanvas(e.clientX, e.clientY);
             e.preventDefault();
             this.click = true;
             if (!this.resize) {
@@ -190,7 +319,7 @@
         onMouseMove: function(e) {
             e.preventDefault();
             if (this.click) {
-                var loc = this.windowToCanvas(e.clientX, e.clientY);
+                let loc = this.windowToCanvas(e.clientX, e.clientY);
                 this.lastPointX = loc.x;
                 this.lastPointY = loc.y;
                 this.reDrawCanvas();
@@ -241,9 +370,9 @@
          * @return {[type]}   [description]
          */
         onImageResize: function(e) {
-            var centerPointX = (this.lastPointX + this.downPointX) / 2;
-            var centerPointY = (this.lastPointY + this.downPointY) / 2;
-            var loc = this.windowToCanvas(e.clientX, e.clientY);
+            let centerPointX = (this.lastPointX + this.downPointX) / 2;
+            let centerPointY = (this.lastPointY + this.downPointY) / 2;
+            let loc = this.windowToCanvas(e.clientX, e.clientY);
             this.ctx.fillStyle = '#FF0000';
             this.ctx.lineWidth = 1;
             if (this.isResizeBoxHover(loc, centerPointX, this.downPointY)) {
@@ -276,7 +405,7 @@
          * Detect the mousehover on given axis
          */
         isResizeBoxHover: function(loc, xPoint, yPoint) {
-            var hoverMargin = 3;
+            let hoverMargin = 3;
             if (loc.x > (xPoint - this.hoverBoxSize - hoverMargin) && loc.x < (xPoint + this.hoverBoxSize + hoverMargin) && loc.y > (yPoint - this.hoverBoxSize - hoverMargin) && loc.y < (yPoint + 5 + hoverMargin)) {
                 this.ctx.fillRect(xPoint - this.hoverBoxSize, yPoint - this.hoverBoxSize, this.hoverBoxSize * 2, this.hoverBoxSize * 2);
                 this.resize = true;
@@ -290,8 +419,8 @@
          * @return {[type]} [description]
          */
         drawResizerBox: function() {
-            var centerPointX = (this.lastPointX + this.downPointX) / 2;
-            var centerPointY = (this.lastPointY + this.downPointY) / 2;
+            let centerPointX = (this.lastPointX + this.downPointX) / 2;
+            let centerPointY = (this.lastPointY + this.downPointY) / 2;
             this.ctx.fillStyle = '#000000';
             this.ctx.lineWidth = 1;
             this.ctx.fillRect(centerPointX - this.hoverBoxSize, this.downPointY - this.hoverBoxSize, this.hoverBoxSize * 2, this.hoverBoxSize * 2);
@@ -304,7 +433,7 @@
          * Translate to HTML coardinates to Canvas coardinates.
          */
         windowToCanvas: function(x, y) {
-            var canvas = this.ctx.canvas,
+            let canvas = this.ctx.canvas,
                 bbox = canvas.getBoundingClientRect();
             return {
                 x: x - bbox.left * (canvas.width / bbox.width),
@@ -317,39 +446,96 @@
          * @return {[type]}
          */
         cropImage: function() {
-            var tempCtx = document.createElement('canvas').getContext('2d');
+            let tempCtx = document.createElement('canvas').getContext('2d');
             tempCtx.canvas.width = 500;
             tempCtx.canvas.height = 500;
             console.log(this.downPointX, this.downPointY, (this.lastPointX - this.downPointX), (this.lastPointY - this.downPointY));
             tempCtx.drawImage(this.image, this.downPointX, this.downPointY, (this.lastPointX - this.downPointX), (this.lastPointY - this.downPointY), 0, 0, (this.lastPointX - this.downPointX), (this.lastPointY - this.downPointY));
-            imageData = tempCtx.canvas.toDataURL();
-            document.getElementById('croppedImage').src = imageData;
-            console.log(imageData);
+            base64 = tempCtx.canvas.toDataURL();
+            document.getElementById('croppedImage').src = base64;
+            console.log("outside:" +base64);
 
-            document.getElementById("myImg").src = imageData;
-
+            document.getElementById("myImg").src = base64;
         }
+    }
+
+    function preview_image(event)
+    {
+        let reader = new FileReader();
+        reader.onload = function()
+        {
+            let output = document.getElementById('output_image');
+            output.src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
     }
 
     imageCropper.init();
 
+    function base64ToBlob(base64, mime) {
+        mime = mime || '';
+        let sliceSize = 1024;
+        let byteChars = window.atob(base64);
+        let byteArrays = [];
+
+        for (let offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+            let slice = byteChars.slice(offset, offset + sliceSize);
+
+            let byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            let byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        return new Blob(byteArrays, {type: mime});
+    }
+
     $("#applyChangesBtn").click(function (e) {
         e.preventDefault();
 
-        var data = document.getElementById("myImg").src = imageData;
-        console.log(data);
+        let image = $('#croppedImage').attr('src');
+        console.log("base64 data: " +image);
+        let base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
+        console.log("IMAGE: " + base64ImageContent);
+
+        // Convert to blob
+        let blob = base64ToBlob(base64ImageContent, 'image/png');
+        console.log("BLOB: " + blob);
+
+        // Create a FormData and append the file
+        let formData = new FormData();
+        formData.append('picture', blob);
+        console.log(formData);
 
         $.ajax({
             type: "POST",
             url: window.location.href,
-            data: {images: "expImage"},
-            success: function (result) {
-                location.href = window.location.href
-            },
-            error: function (err) {
-                console.log(err)
-            }
-        });
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formData})
+            .done(function(e){
+                alert('done!');
+            });
+
+//            data: {images: formData},
+//            success: function (result) {
+//                location.href = window.location.href
+//            },
+//            error: function (err) {
+//                console.log(err)
+//            }
+//        });
+
+//            data: {images: formData}})
+////            data: formData})
+//            .done(function(e){
+//                alert('done!');
+//            });
     });
 
 </script>
