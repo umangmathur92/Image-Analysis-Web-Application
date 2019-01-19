@@ -1,17 +1,17 @@
 const db = require('../database/db');
-var express = require('express');
-var router = express.Router();
-var aws = require('aws-sdk');
-var multer = require('multer');
-var multerS3 = require('multer-s3');
-var path = require('path');
-var res = require("express");
+let express = require('express');
+let router = express.Router();
+let aws = require('aws-sdk');
+let multer = require('multer');
+let multerS3 = require('multer-s3');
+let path = require('path');
+let res = require("express");
 
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
     if (req.isAuthenticated()) {
-        var user = req.user;
+        let user = req.user;
         console.log(user);
         console.log("user_id: " + user.user_id);
         console.log("user_name: " + user.user_name);
@@ -35,7 +35,7 @@ router.get('/', authenticationMiddleware(), function (req, res) {
 
 // after form submission
 router.post('/', upload.array('expImage', 10), function (req, res, next) {
-    var user = req.user;
+    let user = req.user;
 
     console.log("user_id: " + user.user_id);
     console.log("user_name: " + user.user_name);
@@ -44,40 +44,40 @@ router.post('/', upload.array('expImage', 10), function (req, res, next) {
     expDate = req.body.expDate;
     expType = req.body.expType;
 
-    var body = req.body;
+    let body = req.body;
     console.log(body);
 
-    var fileInfo = req.files;
+    let fileInfo = req.files;
     console.log(fileInfo);
 
-    var fileLength = req.files.length;
+    let fileLength = req.files.length;
     console.log("fileLength: " + fileLength);
 
-    var text = "";
-    for (var i = 0; i < fileLength; i++) {
-        var fileName = req.files[i].location;
+    let text = "";
+    for (let i = 0; i < fileLength; i++) {
+        let fileName = req.files[i].location;
         console.log(text += fileName + ",");
     }
 
-    var removedLastComma = text.substring(0, text.length - 1);
+    let removedLastComma = text.substring(0, text.length - 1);
     console.log("FileNames: " + removedLastComma);
 
-    var array = removedLastComma.split(',');
+    let array = removedLastComma.split(',');
     console.log(array);
 
-    for (var j = 0; i < array.length; i++) {
+    for (let j = 0; i < array.length; i++) {
         console.log(array[i]);
     }
 
-    var formattedString = removedLastComma.split(",").join("\n");
+    let formattedString = removedLastComma.split(",").join("\n");
     console.log(formattedString);
 
     db.query('INSERT INTO experiments (users_id, exp_title, exp_date, exp_type) VALUES (?, ?, ?, ?)',
         [user.user_id, expTitle, expDate, expType], function (error, results, fields) {
             if (error) throw error;
 
-            for (var k = 0; k < array.length; k++) {
-                var now = new Date(new Date().toString().split('GMT')[0] + ' UTC').toISOString().split('.')[0].replace('T', '-');
+            for (let k = 0; k < array.length; k++) {
+                let now = new Date(new Date().toString().split('GMT')[0] + ' UTC').toISOString().split('.')[0].replace('T', '-');
                 db.query('INSERT INTO experiment_images (exp_id, user_id, exp_images, created_at) VALUES (?, ?, ?, ?)',
                     [results.insertId, user.user_id, array[k], now])
             }

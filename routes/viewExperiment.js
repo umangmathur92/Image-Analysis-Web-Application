@@ -8,7 +8,6 @@ let aws = require('aws-sdk');
 let multerS3 = require('multer-s3');
 let s3Storage = require('multer-sharp-s3');
 
-
 let upload = multer({storage: storage});
 
 // let upload = multer({

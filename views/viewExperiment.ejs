@@ -1,22 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html class="no-js" lang="">
 <head>
-    <title>View Experiment</title>
+    <title></title>
 
-    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/croppr.css">
+    <link rel="stylesheet" href="/stylesheets/main.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/stylesheets/cropper.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://use.fontawesome.com/8a92be1af5.js"></script>
 
-    <script src="https://code.jquery.com/jquery.min.js"></script>
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet"/>
+    <!--<script src="/javascripts/croppr.js"></script>-->
+    <!--<script src="/javascripts/main.js"></script>-->
 
     <style>
         body {
@@ -102,14 +100,18 @@
             height: 26px;
             border-radius: 100px;
             background: #fff;
-            box-shadow: 0 3px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 3px 3px rgba(0, 0, 0, 0.05);
             content: '';
             transition: all 0.3s ease;
         }
 
-        .lbl:active:after { transform: scale(1.15, 0.85); }
+        .lbl:active:after {
+            transform: scale(1.15, 0.85);
+        }
 
-        .cbx:checked ~ label { background: #6fbeb5; }
+        .cbx:checked ~ label {
+            background: #6fbeb5;
+        }
 
         .cbx:checked ~ label:after {
             left: 20px;
@@ -121,11 +123,21 @@
             pointer-events: none;
         }
 
-        .cbx:disabled ~ label:after { background: #bcbdbc; }
+        .cbx:disabled ~ label:after {
+            background: #bcbdbc;
+        }
 
-        .hidden { display: none; }
+        .hidden {
+            display: none;
+        }
     </style>
+
+    <script>
+
+    </script>
+
 </head>
+
 <body>
 <div class="container">
     <div class="container">
@@ -239,7 +251,6 @@
     </div>
 
     <br>
-    <br>
 
     <div class="row">
 
@@ -248,19 +259,21 @@
 
         <div class="col-md-4">
             <input class="checkhour" type="checkbox" name="<%= eImage[j].id %>" id="<%= eImage[j].id %>"/>
-            <div class="thumbnail">
+            <div class="img-thumbnail">
+                    <img class="large-image" src="<%= eImage[j].exp_images %>"/>
 
-                <p><img id="image" class="scaled" src="<%= eImage[j].exp_images %>" alt="Add a New Experimnet Here!">
-                <hr>
+                <!--<p><img id="image" class="large-image" src="<%= eImage[j].exp_images %>" width="500px" height="500px" alt="Add a New Experimnet Here!">-->
+
 
                 <!--<input type="checkbox" id="cmn-toggle-<%= eImage[j].id %>" class="crop" />-->
                 <!--<label for="cmn-toggle-<%= eImage[j].id %>" data-on="Color" class="lbl" style="float:right"></label>-->
+
+                <br>
 
                 <p style="float:right">
                     <input class="chk" type="checkbox" value="<%= eImage[j].id %>" name="crop" id="<%= eImage[j].id %>"/>
 
                     <input type='button' class="btn btn-primary" id='cropBtn' value='Crop' name="crop"/>
-
                 </p>
 
                 <p><b>Exp Id: <%= data[i].exp_id %> </b>
@@ -274,7 +287,11 @@
 
 </div>
 
-<script src="/javascripts/cropper.js"></script>
+<script src="/javascripts/croppr.js"></script>
+<!--<script src="/javascripts/main.js"></script>-->
+
+<!--<script src="/javascripts/cropper.js"></script>-->
+<!--<script src="/javascripts/croppr.js"></script>-->
 
 <script>
     // crop checkboxes -- gets's id of the enabled checkboxes
@@ -295,12 +312,12 @@
 
         /* check if there is selected checkboxes, by default the length is 1 as it contains one single comma */
         if (selected.length > 0) {
-            <!--document.getElementById('cropBtn-<%= eImage[3].id %>').disabled = false;-->
+            <!--document.getElementById('cropBtn-<%= eImage[0].id %>').disabled = false;-->
 //            $('#cropBtn').prop('disabled', false);
             console.log("enable crop buttons: " + chkArray);
             console.log(chkArray);
         } else {
-            <!--document.getElementById('cropBtn-<%= eImage[3].id %>').disabled = false;-->
+            <!--document.getElementById('cropBtn-<%= eImage[0].id %>').disabled = false;-->
 //            document.getElementById('cropBtn').disabled = true;
 //            $('#cropBtn').prop('disabled', true);
             console.log("disable crop buttons: " + chkArray);
@@ -345,58 +362,57 @@
     }
 
     let rect;
+    $(document).ready(function () {
 
-    window.addEventListener('DOMContentLoaded', function () {
-//        let image = document.querySelector('#image');
+        const cropInstance = [];
 
-//        let image1 = document.getElementsByClassName("scaled")[0];
+        let lock = false;
 
-//        let image = document.getElementsByClassName("scaled")[1];
+        const callback = function (id, value) {
+            console.log("cropbox moved in from image# " + id);
+            if (!lock) {
+                lock = true;
+                cropInstance.forEach(function (cropper, index) {
+                    if (index !== id) {
+                        console.log("moving cropbox " + index);
+                        // cropper.moveTo(value.x, value.y);
+                        cropper.resizeTo(value.width, value.height);
+                        cropper.moveTo(value.x, value.y);
+                    }
+                    if (cropInstance.length - 1 === index) lock = false;
+                })
+            }
+        };
 
-        let k;
-        for (k = 0; k < 40; k++) {
-            let image = document.getElementsByClassName("scaled")[k];
+        let images = $(".large-image");
 
-            let cropper = new Cropper(image, {
-                ready: function () {
-                    let clone = this.cloneNode();
+        for (let i = 0; i < images.length; i++) {
+            let cropper = new Croppr(images[i], {
+                startSize: [100, 100, 'px'],
+                returnMode: "raw",
+                onCropEnd: function (value) {
+                    console.log(value.x, value.y, value.width, value.height);
 
-                    clone.className = '';
-                    clone.style.cssText = (
-                        'display: block;' +
-                        'width: 100%;' +
-                        'min-width: 0;' +
-                        'min-height: 0;' +
-                        'max-width: none;' +
-                        'max-height: none;'
-                    );
+                    let top = value.y;
+                    let right = value.x + value.width;
+                    let bottom = value.y + value.height;
+                    let left = value.x;
 
-                    this.cropper.enable();
-
-//                    this.cropper.disable();
-                },
-
-                viewMode: 1,
-                cropBoxMovable: true,
-                cropBoxResizable: true,
-                zoomable:false,
-                autoCrop: true,
-                responsive: true,
-                movable: false,
-
-            crop: function(value) {
-                    let data = value.detail;
-                    let top = data.y;
-                    let right = data.x + data.width;
-                    let bottom = data.y + data.height;
-                    let left = data.x;
-
+                    let $clip = $('#clip');
+                    $clip.css('position', 'absolute');
+                    $clip.css('top', -1 * top);
+                    $clip.css('left', -1 * left);
                     rect = 'rect(' + top + 'px, ' + right + 'px, ' + bottom + 'px, ' + left + 'px)';
                     console.log(rect);
-                    console.log(selected);
-                },
+                    $clip.css('clip', rect);
+
+                    callback(i, value)
+
+                }
             });
+            cropInstance.push(cropper);
         }
+
     });
 
     // crop button

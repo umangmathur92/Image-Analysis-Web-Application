@@ -1,0 +1,10 @@
+.container {
+  position: relative;
+}
+/*#clip {*/
+  /*position: absolute;*/
+  /*clip: rect(50px, 100px, 200px, 0);*/
+  /*!* clip: shape(top, right, bottom, left); NB 'rect' is the only available option *!*/
+  /*top: -50px;*/
+
+/*}*/
