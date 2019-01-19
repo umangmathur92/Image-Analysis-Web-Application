@@ -34,64 +34,64 @@ router.get('/', authenticationMiddleware(), function (req, res) {
 });
 
 // after form submission
-router.post('/', upload.array('expImage', 10), function (req, res, next) {
-    let user = req.user;
+// router.post('/', upload.array('expImage', 10), function (req, res, next) {
+//     let user = req.user;
 
-    console.log("user_id: " + user.user_id);
-    console.log("user_name: " + user.user_name);
+//     console.log("user_id: " + user.user_id);
+//     console.log("user_name: " + user.user_name);
 
-    expTitle = req.body.expTitle;
-    expDate = req.body.expDate;
-    expType = req.body.expType;
+//     expTitle = req.body.expTitle;
+//     expDate = req.body.expDate;
+//     expType = req.body.expType;
 
-    let body = req.body;
-    console.log(body);
+//     let body = req.body;
+//     console.log(body);
 
-    let fileInfo = req.files;
-    console.log(fileInfo);
+//     let fileInfo = req.files;
+//     console.log(fileInfo);
 
-    let fileLength = req.files.length;
-    console.log("fileLength: " + fileLength);
+//     let fileLength = req.files.length;
+//     console.log("fileLength: " + fileLength);
 
-    let text = "";
-    for (let i = 0; i < fileLength; i++) {
-        let fileName = req.files[i].location;
-        console.log(text += fileName + ",");
-    }
+//     let text = "";
+//     for (let i = 0; i < fileLength; i++) {
+//         let fileName = req.files[i].location;
+//         console.log(text += fileName + ",");
+//     }
 
-    let removedLastComma = text.substring(0, text.length - 1);
-    console.log("FileNames: " + removedLastComma);
+//     let removedLastComma = text.substring(0, text.length - 1);
+//     console.log("FileNames: " + removedLastComma);
 
-    let array = removedLastComma.split(',');
-    console.log(array);
+//     let array = removedLastComma.split(',');
+//     console.log(array);
 
-    for (let j = 0; i < array.length; i++) {
-        console.log(array[i]);
-    }
+//     for (let j = 0; i < array.length; i++) {
+//         console.log(array[i]);
+//     }
 
-    let formattedString = removedLastComma.split(",").join("\n");
-    console.log(formattedString);
+//     let formattedString = removedLastComma.split(",").join("\n");
+//     console.log(formattedString);
 
-    db.query('INSERT INTO experiments (users_id, exp_title, exp_date, exp_type) VALUES (?, ?, ?, ?)',
-        [user.user_id, expTitle, expDate, expType], function (error, results, fields) {
-            if (error) throw error;
+//     db.query('INSERT INTO experiments (users_id, exp_title, exp_date, exp_type) VALUES (?, ?, ?, ?)',
+//         [user.user_id, expTitle, expDate, expType], function (error, results, fields) {
+//             if (error) throw error;
 
-            for (let k = 0; k < array.length; k++) {
-                let now = new Date(new Date().toString().split('GMT')[0] + ' UTC').toISOString().split('.')[0].replace('T', '-');
-                db.query('INSERT INTO experiment_images (exp_id, user_id, exp_images, created_at) VALUES (?, ?, ?, ?)',
-                    [results.insertId, user.user_id, array[k], now])
-            }
+//             for (let k = 0; k < array.length; k++) {
+//                 let now = new Date(new Date().toString().split('GMT')[0] + ' UTC').toISOString().split('.')[0].replace('T', '-');
+//                 db.query('INSERT INTO experiment_images (exp_id, user_id, exp_images, created_at) VALUES (?, ?, ?, ?)',
+//                     [results.insertId, user.user_id, array[k], now])
+//             }
 
-            db.query('SELECT * FROM experiments WHERE users_id= ' + user.user_id + '', function (error, results, fields) {
-                if (error) throw error;
-                db.query('select  * from experiment_images', function (err, results2, field2) {
-                    if (error) throw error;
+//             db.query('SELECT * FROM experiments WHERE users_id= ' + user.user_id + '', function (error, results, fields) {
+//                 if (error) throw error;
+//                 db.query('select  * from experiment_images', function (err, results2, field2) {
+//                     if (error) throw error;
 
-                    res.redirect('/home');
-                })
-            });
-        });
-});
+//                     res.redirect('/home');
+//                 })
+//             });
+//         });
+// });
 
 // auth middleware
 function authenticationMiddleware() {

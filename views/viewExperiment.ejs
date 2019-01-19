@@ -169,7 +169,6 @@
     </div>
 
     <div class="row divtop">
-
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addImageModal">
             Add More Images
@@ -271,8 +270,10 @@
                 <br>
 
                 <p style="float:right">
-                    <input class="chk" type="checkbox" value="<%= eImage[j].id %>" name="crop" id="<%= eImage[j].id %>"/>
-
+                    <label class="switch">
+                        <input class="chk" type="checkbox" value="<%= eImage[j].id %>" name="crop" id="<%= eImage[j].id %>"/>
+                        <span class="slider round"></span>
+                    </label>
                     <input type='button' class="btn btn-primary" id='cropBtn' value='Crop' name="crop"/>
                 </p>
 

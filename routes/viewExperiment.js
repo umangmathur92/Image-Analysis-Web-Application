@@ -8,7 +8,7 @@ let aws = require('aws-sdk');
 let multerS3 = require('multer-s3');
 let s3Storage = require('multer-sharp-s3');
 
-let upload = multer({storage: storage});
+// let upload = multer({storage: storage});
 
 // let upload = multer({
 //     storage: multerS3({
@@ -82,53 +82,53 @@ router.post('/:id/cropImages', function (req, res) {
 });
 
 // after form submission -- add images
-router.post('/:id', upload.array('expImage', 10), function (req, res, next) {
-    let user = req.user;
-    console.log("user_id: " + user.user_id);
-    console.log("user_name: " + user.user_name);
-    let id = req.params.id;
+// router.post('/:id', upload.array('expImage', 10), function (req, res, next) {
+//     let user = req.user;
+//     console.log("user_id: " + user.user_id);
+//     console.log("user_name: " + user.user_name);
+//     let id = req.params.id;
 
-    let fileInfo = req.files;
-    console.log(fileInfo);
+//     let fileInfo = req.files;
+//     console.log(fileInfo);
 
-    let fileLength = req.files.length;
-    console.log("fileLength: " + fileLength);
+//     let fileLength = req.files.length;
+//     console.log("fileLength: " + fileLength);
 
-    let text = "";
-    for (let i = 0; i < fileLength; i++) {
-        let fileName = req.files[i].location;
-        console.log(text += fileName + ",");
-    }
+//     let text = "";
+//     for (let i = 0; i < fileLength; i++) {
+//         let fileName = req.files[i].location;
+//         console.log(text += fileName + ",");
+//     }
 
-    let removedLastComma = text.substring(0, text.length - 1);
-    console.log("FileNames: " + removedLastComma);
+//     let removedLastComma = text.substring(0, text.length - 1);
+//     console.log("FileNames: " + removedLastComma);
 
-    let array = removedLastComma.split(',');
-    console.log(array);
+//     let array = removedLastComma.split(',');
+//     console.log(array);
 
-    for (let i = 0; i < array.length; i++) {
-        console.log(array[i]);
-    }
+//     for (let i = 0; i < array.length; i++) {
+//         console.log(array[i]);
+//     }
 
-    let formattedString = removedLastComma.split(",").join("\n");
-    console.log(formattedString);
+//     let formattedString = removedLastComma.split(",").join("\n");
+//     console.log(formattedString);
 
-    db.query('SELECT * FROM experiments WHERE users_id = ' + user.user_id + ' AND exp_id=' + id + ' ', function (error, results, fields) {
-        if (error) throw error;
+//     db.query('SELECT * FROM experiments WHERE users_id = ' + user.user_id + ' AND exp_id=' + id + ' ', function (error, results, fields) {
+//         if (error) throw error;
 
-        db.query('select * from experiment_images where exp_id=' + id + '', function (err, results2, field2) {
-            if (error) throw error;
+//         db.query('select * from experiment_images where exp_id=' + id + '', function (err, results2, field2) {
+//             if (error) throw error;
 
-            for (let k = 0; k < array.length; k++) {
-                let now = new Date(new Date().toString().split('GMT')[0] + ' UTC').toISOString().split('.')[0].replace('T', '-');
-                db.query('INSERT INTO experiment_images (exp_id, user_id, exp_images, created_at) VALUES (?, ?, ?, ?)',
-                    [id, user.user_id, array[k], now])
-            }
+//             for (let k = 0; k < array.length; k++) {
+//                 let now = new Date(new Date().toString().split('GMT')[0] + ' UTC').toISOString().split('.')[0].replace('T', '-');
+//                 db.query('INSERT INTO experiment_images (exp_id, user_id, exp_images, created_at) VALUES (?, ?, ?, ?)',
+//                     [id, user.user_id, array[k], now])
+//             }
 
-            res.redirect('/viewExperiment/' + id + '');
-        });
-    });
-});
+//             res.redirect('/viewExperiment/' + id + '');
+//         });
+//     });
+// });
 
 // auth middleware
 function authenticationMiddleware() {
