@@ -12,7 +12,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+    <script src="/javascripts/viewexperiment.js"></script>
     <!--<script src="/javascripts/croppr.js"></script>-->
     <!--<script src="/javascripts/main.js"></script>-->
 
@@ -271,10 +271,10 @@
 
                 <p style="float:right">
                     <label class="switch">
-                        <input class="chk" type="checkbox" value="<%= eImage[j].id %>" name="crop" id="<%= eImage[j].id %>"/>
+                        <input class="chk" type="checkbox" value="<%= eImage[j].id %>" name="crop" id="cb<%= eImage[j].id %>"/>
                         <span class="slider round"></span>
                     </label>
-                    <input type='button' class="btn btn-primary" id='cropBtn' value='Crop' name="crop"/>
+                    <input type='button' class="btn btn-primary cropBtn" id='bt<%= eImage[j].id %>' value='Crop' name="crop"/>
                 </p>
 
                 <p><b>Exp Id: <%= data[i].exp_id %> </b>
@@ -301,7 +301,7 @@
     $checkbox = $('.chk');
 
     $checkbox.click(checkArray);
-
+    
     function checkArray() {
         let chkArray = [];
         $(".chk:checked").each(function () {
@@ -313,12 +313,12 @@
 
         /* check if there is selected checkboxes, by default the length is 1 as it contains one single comma */
         if (selected.length > 0) {
-            <!--document.getElementById('cropBtn-<%= eImage[0].id %>').disabled = false;-->
+            document.getElementById(this.id.replace('cb', 'bt')).disabled = false;
 //            $('#cropBtn').prop('disabled', false);
             console.log("enable crop buttons: " + chkArray);
             console.log(chkArray);
         } else {
-            <!--document.getElementById('cropBtn-<%= eImage[0].id %>').disabled = false;-->
+            document.getElementById(this.id.replace('cb', 'bt')).disabled = true;
 //            document.getElementById('cropBtn').disabled = true;
 //            $('#cropBtn').prop('disabled', true);
             console.log("disable crop buttons: " + chkArray);
@@ -344,10 +344,12 @@
 //            document.getElementById('cropBtn').disabled = true;
 //            $('#cropBtn').prop('disabled', false);
             console.log("enable all crop buttons: " + chkArray);
+            $('.cropBtn').attr('disabled', false);
         } else {
 //            document.getElementById('cropBtn').disabled = false;
 //            $('#cropBtn').prop('disabled', true);
             console.log("disable all crop buttons: " + chkArray);
+            $('.cropBtn').attr('disabled', true);
         }
     });
 
