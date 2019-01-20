@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="/javascripts/viewexperimentnew.js"></script>
+        <script src="/javascripts/viewexperiment.js"></script>
         <link rel="stylesheet" href="/stylesheets/viewexperiment.css">
         <script src="/javascripts/croppr.js"></script>
     </head>
@@ -44,7 +44,8 @@
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteImageModal">Delete Images</button>
                 <button type="button" class="btn btn-primary" id="btnUnselectAll" style="float:right">Unselect All</button>
                 <button type="button" class="btn btn-primary" id="btnSelectAll" style="float:right">Select All</button>
-                <button type="button" class="btn btn-primary checkall" style="float:right">Enable Crop</button>
+                <button type="button" class="btn btn-primary" id="btnDisableCrop" style="float:right">Disable All Crop</button>
+                <button type="button" class="btn btn-primary" id="btnEnableCrop" style="float:right">Enable All Crop</button>
                 <div class="modal fade" id="addImageModal" tabindex="-1" role="dialog" aria-labelledby="addImageModal" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -99,10 +100,10 @@
                         <br>
                         <p style="float:right">
                             <label class="switch">
-                                <input class="chk" type="checkbox" value="<%= eImage[j].id %>" name="crop" id="cb<%= eImage[j].id %>"/>
+                                <input class="checkBoxToggleCrop" type="checkbox" value="<%= eImage[j].id %>" name="crop" id="cbToggle<%= eImage[j].id %>"/>
                                 <span class="slider round"></span>
                             </label>
-                            <input type='button' class="btn btn-primary cropBtn" id='bt<%= eImage[j].id %>' value='Crop' name="crop"/>
+                            <input type='button' class="btn btn-primary cropBtn" id='btnCrop<%= eImage[j].id %>' value='Crop' name="crop"/>
                         </p>
                         <p><b>Exp Id: <%= data[i].exp_id %> </b>
                     </div>
