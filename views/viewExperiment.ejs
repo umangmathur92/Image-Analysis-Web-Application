@@ -1,515 +1,115 @@
 <!doctype html>
-<html class="no-js" lang="">
-<head>
-    <title></title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" href="/stylesheets/style.css">
-    <link rel="stylesheet" href="/stylesheets/croppr.css">
-    <link rel="stylesheet" href="/stylesheets/main.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="/javascripts/viewexperiment.js"></script>
-    <!--<script src="/javascripts/croppr.js"></script>-->
-    <!--<script src="/javascripts/main.js"></script>-->
-
-    <style>
-        body {
-            width: 100%;
-            margin: 0 auto;
-            padding: 0;
-            /*font-family: helvetica;*/
-            background-color: #FF7D12;
-            /*background-color: #0B3861;*/
-        }
-
-        .navbar {
-            margin-bottom: 0;
-            background-color: #f4511e;
-            z-index: 9999;
-            border: 0;
-            font-size: 12px !important;
-            line-height: 1.42857143 !important;
-            letter-spacing: 4px;
-            border-radius: 0;
-            font-family: Montserrat, sans-serif;
-        }
-
-        .navbar li a, .navbar .navbar-brand {
-            color: #fff !important;
-        }
-
-        .navbar-nav li a:hover, .navbar-nav li.active a {
-            color: #f4511e !important;
-            background-color: #fff !important;
-        }
-
-        .navbar-default .navbar-toggle {
-            border-color: transparent;
-            color: #fff !important;
-        }
-
-        .jumbocolor {
-            background-color: #f4511e;
-            color: #fff;
-        }
-
-        .divtop {
-            margin-top: 75px;
-        }
-
-        /**/
-        .container {
-            max-width: 960px;
-            margin: 20px auto;
-        }
-
-        img {
-            max-width: 100%;
-        }
-
-        .row,
-        .preview {
-            overflow: hidden;
-        }
-
-        .col {
-            float: left;
-        }
-
-        .lbl {
-            position: relative;
-            display: block;
-            height: 20px;
-            width: 44px;
-            background: #898989;
-            border-radius: 100px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .lbl:after {
-            position: absolute;
-            left: -2px;
-            top: -3px;
-            display: block;
-            width: 26px;
-            height: 26px;
-            border-radius: 100px;
-            background: #fff;
-            box-shadow: 0 3px 3px rgba(0, 0, 0, 0.05);
-            content: '';
-            transition: all 0.3s ease;
-        }
-
-        .lbl:active:after {
-            transform: scale(1.15, 0.85);
-        }
-
-        .cbx:checked ~ label {
-            background: #6fbeb5;
-        }
-
-        .cbx:checked ~ label:after {
-            left: 20px;
-            background: #179588;
-        }
-
-        .cbx:disabled ~ label {
-            background: #d5d5d5;
-            pointer-events: none;
-        }
-
-        .cbx:disabled ~ label:after {
-            background: #bcbdbc;
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
-
-    <script>
-
-    </script>
-
-</head>
-
-<body>
-<div class="container">
-    <div class="container">
-        <nav class="navbar navbar-default navbar-fixed-top">
+<html>
+    <head>
+        <title>View Experiment</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="/stylesheets/style.css">
+        <link rel="stylesheet" href="/stylesheets/croppr.css">
+        <link rel="stylesheet" href="/stylesheets/main.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="/javascripts/viewexperimentnew.js"></script>
+        <link rel="stylesheet" href="/stylesheets/viewexperiment.css">
+        <script src="/javascripts/croppr.js"></script>
+    </head>
+    <body>
+        <div class="container">
             <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/home">EWA</a>
-                </div>
-                <div class="collapse navbar-collapse" id="myNavbar">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome, <%= uname %>!</a></li>
-                        <li>
-                            <form class="form" id="form" method="POST" action="/logout">
-                                <a href="/logout"
-                                   onclick="document.getElementById('form').submit(); return false;"></span>
-                                    Logout</a></a>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-    </div>
-
-    <div class="row divtop">
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addImageModal">
-            Add More Images
-        </button>
-
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteImageModal">
-            Delete Images
-        </button>
-
-        <button type="button" class="btn btn-primary uncheck" style="float:right">Select All</button>
-
-        <button type="button" class="btn btn-primary checkall" style="float:right">Enable Crop</button>
-
-        <!-- add image modal -->
-        <div class="modal fade" id="addImageModal" tabindex="-1" role="dialog" aria-labelledby="addImageModal"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title">Add More Images</h4>
-                    </div>
-
-                    <div class="modal-body">
-
-                        <% for (var i = 0; i < data.length; i++) { %>
-
-                        <form class="form" method="POST" action="<%= data[i].exp_id %>"
-                              enctype="multipart/form-data">
-
-                            <label for="image">Select Images to add to <%= data[i].exp_title %></label>
-                            <input type="file" name="expImage" multiple accept="image/*" required autofocus/><br>
-
-                            <button class="btn btn-primary btn-block" type="submit">
-                                Add Images
+                <nav class="navbar navbar-default navbar-fixed-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
                             </button>
-                            <% } %>
-
-                        </form>
+                            <a class="navbar-brand" href="/home">EWA</a>
+                        </div>
+                        <div class="collapse navbar-collapse" id="myNavbar">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome, <%= uname %>!</a></li>
+                                <li>
+                                    <form class="form" id="form" method="POST" action="/logout">
+                                        <a href="/logout" onclick="document.getElementById('form').submit(); return false;">Logout</a>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-
+                </nav>
+            </div>
+            <div class="row divtop">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addImageModal">Add More Images</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteImageModal">Delete Images</button>
+                <button type="button" class="btn btn-primary" id="btnUnselectAll" style="float:right">Unselect All</button>
+                <button type="button" class="btn btn-primary" id="btnSelectAll" style="float:right">Select All</button>
+                <button type="button" class="btn btn-primary checkall" style="float:right">Enable Crop</button>
+                <div class="modal fade" id="addImageModal" tabindex="-1" role="dialog" aria-labelledby="addImageModal" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">Add More Images</h4>
+                            </div>
+                            <div class="modal-body">
+                                <% for (var i = 0; i < data.length; i++) { %>
+                                <form class="form" method="POST" action="<%= data[i].exp_id %>" enctype="multipart/form-data">
+                                    <label for="image">Select Images to add to <%= data[i].exp_title %></label>
+                                    <input type="file" name="expImage" multiple accept="image/*" required autofocus/><br>
+                                    <button class="btn btn-primary btn-block" type="submit">Add Images</button>
+                                </form>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="deleteImageModal" tabindex="-1" role="dialog" aria-labelledby="deleteImageModal"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Delete Images</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p id="demo"> No Image Selected </p>
+                            <p id="demo1"></p>
+                        </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button class="btn btn-primary" type="submit" id="deleteBtn">Delete Images</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!--delete image modal-->
-        <div class="modal fade" id="deleteImageModal" tabindex="-1" role="dialog" aria-labelledby="deleteImageModal"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title">Delete Images</h4>
+            <br>
+            <div class="row">
+                <% for (var i = 0; i < data.length; i++) { %>
+                <% for (var j = 0; j < eImage.length; j++) { %>
+                <div class="col-md-4">
+                    <input class="checkboxImageTop" type="checkbox" name="cbIt<%=eImage[j].id %>" id="<%= eImage[j].id %>"/>
+                    <div class="img-thumbnail">
+                        <img class="large-image" src="<%= eImage[j].exp_images %>"/>
+                        <br>
+                        <p style="float:right">
+                            <label class="switch">
+                                <input class="chk" type="checkbox" value="<%= eImage[j].id %>" name="crop" id="cb<%= eImage[j].id %>"/>
+                                <span class="slider round"></span>
+                            </label>
+                            <input type='button' class="btn btn-primary cropBtn" id='bt<%= eImage[j].id %>' value='Crop' name="crop"/>
+                        </p>
+                        <p><b>Exp Id: <%= data[i].exp_id %> </b>
                     </div>
-
-                    <div class="modal-body">
-
-                        <p id="demo"> No Image Selected </p>
-                        <p id="demo1"></p>
-
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-
-                        <button class="btn btn-primary" type="submit" id="deleteBtn">
-                            Delete Images
-                        </button>
-                    </div>
-
                 </div>
+                <% } %>
+                <% } %>
             </div>
         </div>
-
-    </div>
-
-    <br>
-
-    <div class="row">
-
-        <% for (var i = 0; i < data.length; i++) { %>
-        <% for (var j = 0; j < eImage.length; j++) { %>
-
-        <div class="col-md-4">
-            <input class="checkhour" type="checkbox" name="<%= eImage[j].id %>" id="<%= eImage[j].id %>"/>
-            <div class="img-thumbnail">
-                    <img class="large-image" src="<%= eImage[j].exp_images %>"/>
-
-                <!--<p><img id="image" class="large-image" src="<%= eImage[j].exp_images %>" width="500px" height="500px" alt="Add a New Experimnet Here!">-->
-
-
-                <!--<input type="checkbox" id="cmn-toggle-<%= eImage[j].id %>" class="crop" />-->
-                <!--<label for="cmn-toggle-<%= eImage[j].id %>" data-on="Color" class="lbl" style="float:right"></label>-->
-
-                <br>
-
-                <p style="float:right">
-                    <label class="switch">
-                        <input class="chk" type="checkbox" value="<%= eImage[j].id %>" name="crop" id="cb<%= eImage[j].id %>"/>
-                        <span class="slider round"></span>
-                    </label>
-                    <input type='button' class="btn btn-primary cropBtn" id='bt<%= eImage[j].id %>' value='Crop' name="crop"/>
-                </p>
-
-                <p><b>Exp Id: <%= data[i].exp_id %> </b>
-            </div>
-        </div>
-
-        <% } %>
-        <% } %>
-
-    </div>
-
-</div>
-
-<script src="/javascripts/croppr.js"></script>
-<!--<script src="/javascripts/main.js"></script>-->
-
-<!--<script src="/javascripts/cropper.js"></script>-->
-<!--<script src="/javascripts/croppr.js"></script>-->
-
-<script>
-    // crop checkboxes -- gets's id of the enabled checkboxes
-    let selected;
-
-    $checkbox = $('.chk');
-
-    $checkbox.click(checkArray);
-    
-    function checkArray() {
-        let chkArray = [];
-        $(".chk:checked").each(function () {
-            chkArray.push($(this).val());
-        });
-
-//        let selected;
-        selected = chkArray.join(',');
-
-        /* check if there is selected checkboxes, by default the length is 1 as it contains one single comma */
-        if (selected.length > 0) {
-            document.getElementById(this.id.replace('cb', 'bt')).disabled = false;
-//            $('#cropBtn').prop('disabled', false);
-            console.log("enable crop buttons: " + chkArray);
-            console.log(chkArray);
-        } else {
-            document.getElementById(this.id.replace('cb', 'bt')).disabled = true;
-//            document.getElementById('cropBtn').disabled = true;
-//            $('#cropBtn').prop('disabled', true);
-            console.log("disable crop buttons: " + chkArray);
-            console.log(chkArray);
-        }
-    }
-
-    // enable all crop checkboxes
-    let clicked = false;
-    $(".checkall").on("click", function () {
-        $(".chk").prop("checked", !clicked);
-        clicked = !clicked;
-        let chkArray = [];
-        $(".chk:checked").each(function () {
-            chkArray.push($(this).val());
-        });
-
-//        let selected;
-        selected = chkArray.join(',');
-
-        /* check if there is selected checkboxes, by default the length is 1 as it contains one single comma */
-        if (selected.length > 0) {
-//            document.getElementById('cropBtn').disabled = true;
-//            $('#cropBtn').prop('disabled', false);
-            console.log("enable all crop buttons: " + chkArray);
-            $('.cropBtn').attr('disabled', false);
-        } else {
-//            document.getElementById('cropBtn').disabled = false;
-//            $('#cropBtn').prop('disabled', true);
-            console.log("disable all crop buttons: " + chkArray);
-            $('.cropBtn').attr('disabled', true);
-        }
-    });
-
-    function each(arr, callback) {
-        let length = arr.length;
-        let i;
-
-        for (i = 0; i < length; i++) {
-            callback.call(arr, arr[i], i, arr);
-        }
-
-        return arr;
-    }
-
-    let rect;
-    $(document).ready(function () {
-
-        const cropInstance = [];
-
-        let lock = false;
-
-        const callback = function (id, value) {
-            console.log("cropbox moved in from image# " + id);
-            if (!lock) {
-                lock = true;
-                cropInstance.forEach(function (cropper, index) {
-                    if (index !== id) {
-                        console.log("moving cropbox " + index);
-                        // cropper.moveTo(value.x, value.y);
-                        cropper.resizeTo(value.width, value.height);
-                        cropper.moveTo(value.x, value.y);
-                    }
-                    if (cropInstance.length - 1 === index) lock = false;
-                })
-            }
-        };
-
-        let images = $(".large-image");
-
-        for (let i = 0; i < images.length; i++) {
-            let cropper = new Croppr(images[i], {
-                startSize: [100, 100, 'px'],
-                returnMode: "raw",
-                onCropEnd: function (value) {
-                    console.log(value.x, value.y, value.width, value.height);
-
-                    let top = value.y;
-                    let right = value.x + value.width;
-                    let bottom = value.y + value.height;
-                    let left = value.x;
-
-                    let $clip = $('#clip');
-                    $clip.css('position', 'absolute');
-                    $clip.css('top', -1 * top);
-                    $clip.css('left', -1 * left);
-                    rect = 'rect(' + top + 'px, ' + right + 'px, ' + bottom + 'px, ' + left + 'px)';
-                    console.log(rect);
-                    $clip.css('clip', rect);
-
-                    callback(i, value)
-
-                }
-            });
-            cropInstance.push(cropper);
-        }
-
-    });
-
-    // crop button
-    $("#cropBtn").click(function (e) {
-        e.preventDefault();
-
-        const data = {rect: rect}
-        const data1 = {selected: selected}
-
-        console.log(data);
-        console.log(data1);
-
-        $.ajax({
-                type: "POST",
-                url: window.location.href + "/cropImages",
-                data: {data1: JSON.stringify(data1), data: JSON.stringify(data)},
-                success: function (result) {
-                    location.href = window.location.href
-                },
-                error: function (err) {
-                    console.log(err)
-                }
-            });
-    });
-
-    // select images
-    $checkbox = $('.checkhour');
-
-    $checkbox.click(checkArray1);
-    let ckArray = [];
-
-    function checkArray1() {
-        ckArray = $.map($checkbox, function (el) {
-            if (el.checked) {
-                return el.id
-            }
-        });
-        console.log(ckArray);
-        document.getElementById("demo").innerHTML = ckArray;
-
-        if (ckArray.length === 0) {
-            document.getElementById("demo1").innerHTML = "No Image Selected";
-        }
-        if (ckArray.length === 1) {
-            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + ckArray.length + " image?";
-        } else {
-            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + ckArray.length + " images?";
-        }
-    }
-
-    // select all images using checkbox
-    let click = false;
-    $(".uncheck").on("click", function () {
-        $(".checkhour").prop("checked", !click);
-        click = !click;
-        ckArray = $.map($checkbox, function (el) {
-            if (el.checked) {
-                return el.id
-            }
-        });
-        console.log(ckArray);
-        document.getElementById("demo").innerHTML = ckArray;
-
-        if (ckArray.length === 1) {
-            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + ckArray.length + " image?";
-        } else {
-            document.getElementById("demo1").innerHTML = "Are you sure you want to delete " + ckArray.length + " images?";
-        }
-
-        if (ckArray.length === 0) {
-            document.getElementById("demo1").innerHTML = "No Image Selected";
-        }
-    });
-
-    // gets id of the images to delete on delete button
-    $("#deleteBtn").click(function (e) {
-        e.preventDefault();
-
-        const data = {foo: ckArray}
-        $.ajax({
-            type: "POST",
-            url: window.location.href + "/deleteImages",
-            data: {images: JSON.stringify(ckArray)},
-            success: function (result) {
-                location.href = window.location.href
-//                location.reload()
-            },
-            error: function (err) {
-                console.log(err)
-            }
-        });
-    });
-
-</script>
-
-</body>
+    </body>
 </html>
